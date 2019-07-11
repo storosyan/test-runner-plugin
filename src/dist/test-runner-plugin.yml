@@ -1,0 +1,7 @@
+id: test-runner-plugin
+name: Test Runner Plugin
+description: This plugin will display all existing test tags and allow run tests by including and/or excluding tags
+extensions:
+- com.kgpco.vz.allure.plugin.TestRunnerPlugin
+jsFiles:
+- index.js
