@@ -1,35 +1,51 @@
 'use strict';
 
-let getTestCases = function(ti, ind) {
-    var html = "";
-    var label = ti.displayName;
-    html = '<p>' + ind + label + '</p>';
-    var children = ti.children;
-    if (typeof children !== 'undefined') {
-        var i;
-        for (i = 0; i < children.length; i++) {
-            html += getTestCases(JSON.parse(JSON.stringify(children[i])), ind + "&nbsp;&nbsp;") + '\n';
+let buildTestsList = function (parentElement, items) {
+    var i, li, inp;
+    if (typeof items.children !== 'undefined') {
+        var u = document.createElement("ul");
+        u.style.listStyle = 'none';
+        parentElement.append(u);
+        for (i = 0; i < items.children.length; i++) {
+            li = document.createElement('li');
+            inp = document.createElement('input');
+            inp.type = 'checkbox';
+            inp.className = 'cbox';
+            li.append(inp);
+            li.className = 'dir';
+            li.style.cursor = 'pointer';
+            li.style.marginTop = '10px';
+            if (typeof items.children[i].tags !== 'undefined') {
+                li.innerHTML += items.children[i].displayName + ' [' + items.children[i].tags + ']';
+            } else {
+                li.innerHTML += items.children[i].displayName;
+            }
+            buildTestsList(li, JSON.parse(JSON.stringify(items.children[i])));
+            u.append(li);
         }
     }
-    return html;
 }
 
-let getTags = function(data) {
-    let html = "";
-    return html;
+let buildTagsList = function (parentElement, items) {
+    if (typeof items !== 'undefined') {
+        var u = document.createElement("ul");
+        parentElement.append(u);
+        for (var i = 0; i < items.tags.length; i++) {
+            var li = document.createElement('li');
+            li.innerHTML += items.tags[i];
+            u.append(li);
+        }
+    }
 }
 var TestRunnerTreeModel = Backbone.Model.extend({
     initialize(
-        models,
-        {url}) {
+        models, {
+            url
+        }) {
         this.url = url;
     }
 
 })
-
-//const template = function (data) {
-//    return '<h3>Available Tests</h3><div style="overflow-y: scroll;">' + testCase(data, "&nbsp;&nbsp;") + '</div>';
-//};
 
 allure.api.addTranslation('en', {
     tab: {
@@ -42,14 +58,52 @@ allure.api.addTranslation('en', {
 var TestRunnerTreeView = Backbone.Marionette.View.extend({
     //template: template,
 
+    events: {
+        'click .dir': 'toggle',
+        'change .floral': 'checkbox'
+    },
+
+    toggle: function (e) {
+        e.stopPropagation();
+        this.$(e.currentTarget).children('ul').slideToggle();
+    },
+
+    checkbox: function (e) {
+        this.$(e.target).next('ul').find('input:checkbox').prop('checked', this.$(e.target).prop("checked"));
+
+        for (var i = this.$(e.currentTarget).find('ul').length - 1; i >= 0; i--) {
+            var tar = this.$(e.currentTarget).find('ul:eq(' + i + ')').prev('input:checkbox');
+            this.$(e.currentTarget).find('ul:eq(' + i + ')').prev('input:checkbox').prop('checked', function () {
+                return tar.next('ul').find('input:checkbox:not(:checked)').length === 0 ? true : false;
+            });
+        }
+
+    },
+
     render: function () {
         let js = JSON.parse(JSON.stringify(this.options));
-        let content =
-                '<h3>Available Tags</h3><div>'
-                + getTags(js) + '</div>'
-                + '<h3>Available Tests</h3><div style="overflow: auto; max-height: 100vh;">'
-                + getTestCases(js, "");
-        this.$el.html(content + '</div>');
+
+        var tags = document.createElement("div");
+        this.$el.append(tags);
+        var tagsHeading = document.createElement("h3");
+        tagsHeading.innerHTML += 'Available Tags';
+        tags.append(tagsHeading);
+        var tagsDiv = document.createElement("div");
+        tags.append(tagsDiv);
+        var tests = document.createElement("div");
+        this.$el.append(tests);
+        var testHeading = document.createElement("h3");
+        testHeading.innerHTML += 'Available Tests';
+        tests.append(testHeading);
+        var testsDiv = document.createElement("div");
+        testsDiv.className = 'floral';
+        testsDiv.style.overflow = 'scroll';
+        testsDiv.style.height = '90vh';
+        tests.append(testsDiv);
+
+        buildTagsList(tagsDiv, js);
+        buildTestsList(testsDiv, js.tests);
+
         return this;
     }
 
@@ -57,10 +111,14 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
 
 class TestRunnerTreeLayout extends allure.components.AppLayout {
 
-    initialize({url}) {
+    initialize({
+        url
+    }) {
         //alert('layout:init')
         super.initialize();
-        this.tree = new TestRunnerTreeModel([], {url});
+        this.tree = new TestRunnerTreeModel([], {
+            url
+        });
     }
 
     loadData() {
@@ -73,7 +131,9 @@ class TestRunnerTreeLayout extends allure.components.AppLayout {
         return new TestRunnerTreeView(this.tree)
     }
     onViewReady() {
-        const {url} = this.options;
+        const {
+            url
+        } = this.options;
         this.onRouteUpdate(url);
     }
     onRouteUpdate(url) {
@@ -82,7 +142,8 @@ class TestRunnerTreeLayout extends allure.components.AppLayout {
 }
 
 allure.api.addTab('tests', {
-    title: 'tab.tests.name', icon: 'fa fa-list',
+    title: 'tab.tests.name',
+    icon: 'fa fa-list',
     route: 'tests',
     onEnter: (function () {
         //alert('addtab')
