@@ -1,30 +1,6 @@
 'use strict';
 
-// let getTestCases = function (ti, ind) {
-//     var html = "";
-//     var label = ti.displayName;
-//     // var type = ti.type;
-
-
-//     // if (typeof type === 'package') {
-//     //     html = '<ul><li><input type="checkbox" class="familybox cbox"/>' + label;
-//     // }
-
-
-
-//     html = '<p>' + ind + '<input type="checkbox"/> ' + label + '</p>';
-//     var children = ti.children;
-//     if (typeof children !== 'undefined') {
-//         var i;
-//         for (i = 0; i < children.length; i++) {
-//             console.log(JSON.parse(JSON.stringify(children[i])));
-//             html += getTestCases(JSON.parse(JSON.stringify(children[i])), ind + "&nbsp;&nbsp;") + '\n';
-//         }
-//     }
-//     return html;
-// }
-
-let buildList = function (parentElement, items) {
+let buildTestsList = function (parentElement, items) {
     var i, li, inp;
     if (typeof items.children !== 'undefined') {
         var u = document.createElement("ul");
@@ -39,42 +15,27 @@ let buildList = function (parentElement, items) {
             li.className = 'dir';
             li.style.cursor = 'pointer';
             li.style.marginTop = '10px';
-            li.innerHTML += items.children[i].displayName;
-            buildList(li, JSON.parse(JSON.stringify(items.children[i])));
+            if (typeof items.children[i].tags !== 'undefined') {
+                li.innerHTML += items.children[i].displayName + ' [' + items.children[i].tags + ']';
+            } else {
+                li.innerHTML += items.children[i].displayName;
+            }
+            buildTestsList(li, JSON.parse(JSON.stringify(items.children[i])));
             u.append(li);
         }
     }
 }
 
-
-
-$(document).ready(function () {
-    $.extend($.expr[':'], {
-        unchecked: function (obj) {
-            return ((obj.type == 'checkbox' || obj.type == 'radio') && !$(obj).is(':checked'));
+let buildTagsList = function (parentElement, items) {
+    if (typeof items !== 'undefined') {
+        var u = document.createElement("ul");
+        parentElement.append(u);
+        for (var i = 0; i < items.tags.length; i++) {
+            var li = document.createElement('li');
+            li.innerHTML += items.tags[i];
+            u.append(li);
         }
-    });
-
-    $(".floral input:checkbox").live('change', function () {
-        $(this).next('ul').find('input:checkbox').prop('checked', $(this).prop("checked"));
-
-        for (var i = $('.floral').find('ul').length - 1; i >= 0; i--) {
-            $('.floral').find('ul:eq(' + i + ')').prev('input:checkbox').prop('checked', function () {
-                return $(this).next('ul').find('input:unchecked').length === 0 ? true : false;
-            });
-        }
-    });
-
-    $('.dir').live('click', function (e) {
-        e.stopPropagation();
-        $(this).children('ul').slideToggle();
-    });
-
-});
-
-let getTags = function (data) {
-    let html = "";
-    return html;
+    }
 }
 var TestRunnerTreeModel = Backbone.Model.extend({
     initialize(
@@ -85,10 +46,6 @@ var TestRunnerTreeModel = Backbone.Model.extend({
     }
 
 })
-
-//const template = function (data) {
-//    return '<h3>Available Tests</h3><div style="overflow-y: scroll;">' + testCase(data, "&nbsp;&nbsp;") + '</div>';
-//};
 
 allure.api.addTranslation('en', {
     tab: {
@@ -101,17 +58,30 @@ allure.api.addTranslation('en', {
 var TestRunnerTreeView = Backbone.Marionette.View.extend({
     //template: template,
 
+    events: {
+        'click .dir': 'toggle',
+        'change .floral': 'checkbox'
+    },
+
+    toggle: function (e) {
+        e.stopPropagation();
+        this.$(e.currentTarget).children('ul').slideToggle();
+    },
+
+    checkbox: function (e) {
+        this.$(e.target).next('ul').find('input:checkbox').prop('checked', this.$(e.target).prop("checked"));
+
+        for (var i = this.$(e.currentTarget).find('ul').length - 1; i >= 0; i--) {
+            var tar = this.$(e.currentTarget).find('ul:eq(' + i + ')').prev('input:checkbox');
+            this.$(e.currentTarget).find('ul:eq(' + i + ')').prev('input:checkbox').prop('checked', function () {
+                return tar.next('ul').find('input:checkbox:not(:checked)').length === 0 ? true : false;
+            });
+        }
+
+    },
+
     render: function () {
         let js = JSON.parse(JSON.stringify(this.options));
-        // let content =
-        //     '<h3>Available Tags</h3><div>' +
-        //     getTags(js) + '</div>' +
-        //     '<h3>Available Tests</h3><div style="overflow: auto; max-height: 100vh;" id="pageContent"> '
-        // // getTestCases(js, "") + '</fieldset>';
-        // this.$el.html(content + '</div>');
-
-        // var tags = document.createElement('<h3 />');
-        // tags.innerText += 'Available Tags';
 
         var tags = document.createElement("div");
         this.$el.append(tags);
@@ -131,9 +101,8 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
         testsDiv.style.height = '90vh';
         tests.append(testsDiv);
 
-
-
-        buildList(testsDiv, js);
+        buildTagsList(tagsDiv, js);
+        buildTestsList(testsDiv, js.tests);
 
         return this;
     }
