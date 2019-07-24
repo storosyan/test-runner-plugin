@@ -58,16 +58,33 @@ let search = function (element, matchingTitle) {
 }
 
 let buildTagsList = function (parentElement, items) {
-  if (typeof items !== "undefined") {
-    var u = document.createElement("ul");
-    parentElement.append(u);
-    for (var i = 0; i < items.tags.length; i++) {
-      var li = document.createElement("li");
-      li.innerHTML += items.tags[i].name;
-      u.append(li);
+    if (typeof items !== 'undefined') {
+        var u = document.createElement("ul");
+        parentElement.append(u);
+        for (var i = 0; i < items.tags.length; i++) {
+            console.log(items.tags[i])
+            var li = document.createElement('li');
+            li.id = "tags_"+i
+            var rowSpan = document.createElement('span')
+            rowSpan.id = "tag_" + i
+            var chk1 = document.createElement('input');
+            var chk2 = document.createElement('input');
+            chk1.type = 'checkbox';
+            chk1.id = "tags_include_" + i;
+            chk2.id = "tags_exclude_"+i;
+            chk2.type = 'checkbox';
+            rowSpan.innerHTML = items.tags[i].name
+
+            //console.log(chk)
+            li.append(chk1);
+            li.append(chk2);
+            li.append(rowSpan);
+            //console.log(li.innerHTML)
+            u.append(li);
+        }
+        console.log(u.innerHTML)
     }
-  }
-};
+}
 
 var TestRunnerTreeModel = Backbone.Model.extend({
   initialize(models, {
@@ -218,7 +235,7 @@ allure.api.addTab("tests", {
   onEnter: function () {
     //alert('addtab')
     return new TestRunnerTreeLayout({
-      url: "data/testDiscoverynew.json"
+       url: 'data/plugindata.json'
     });
   }
 });
