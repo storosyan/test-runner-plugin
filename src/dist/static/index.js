@@ -194,7 +194,7 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
     buildTagsList(tagsDiv, js);
     buildTestsList(testsDiv, js.tests);
 
-    return this;
+    return this ;
   }
 });
 
