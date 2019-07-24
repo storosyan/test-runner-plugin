@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            .grid {
+                width: 100%;
+                max-height: 100%;
+                font-size: 14px;
+                font-weight: normal;
+                color: #000;
+                font-family: Helvetica,Arial,sans-serif;
+            }
+            .panel {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            .text-row {
+                width:100%;
+                margin-left: 5px;
+                font-size: 12x;
+            }
+            .row {
+                width:100%;
+                margin-bottom: 15px;
+                border: 1px;
+                border-style:solid;
+                border-color: gray;
+                margin-right: 5px;
+            }
+
+            .left-col {
+                width:40%;
+                min-width:100px;
+                border: 1px;
+                border-style:solid;
+                border-color: gray;
+                margin-bottom: 13px;
+                margin-right: 13px;
+                float:left;
+            }
+            .right-col {
+                width:58%;
+                min-width:200px;
+                border: 1px;
+                border-style:solid;
+                border-color: gray;
+                margin-bottom: 13px;
+                float:right;
+            }
+            .title {
+                font-weight: lighter;
+                margin-top: 0;
+                margin-bottom: 15px;
+                margin-left: 5px;
+            }
+            .include {
+                width: 35px;
+                font-color: green;
+                text-align: justify;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            .exclude {
+                width: 15px;
+                color: red;
+                text-align: justify;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            .tree {
+                overflow: auto;
+                height: 90vh;
+            }
+            .tree_node {
+                list-style: none;
+            }
+            .tree_leaf {
+                cursor: pointer; margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='grid'>
+            <div class='panel'>
+                <div class="row">
+                    <!-- title -->
+                    <div class="title"><h2>Test Executor</h2></div>
+                    <div class="panel">
+                        <span class='text-row'>
+                            OENC host
+                            <input type="text" name="" value=""/>
+                        </span>
+                    </div>
+                    <div class="panel">
+                        <span class='text-row'>Total number of selected Tests cases </span><span>100</span>
+                    </div>
+                    <div class="panel">
+                        <span class='text-row'><button type="button" name="button">Run Tests</button></span>
+                    </div>
+                </div>
+            </div>
+            <div class='panel'>
+                <div class='left-col'>
+                    <!-- title -->
+                    <div class="title"><h2>Tags</h2></div>
+                    <div class="text-row">
+                    </div>
+                    <div class="text-row">
+                        <span class="include">√</span>
+                        <span class="exclude">x</span>
+                        <span>Tag name</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>demoready</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>inactive</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>login</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>negative</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>nodemoready</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>positive</span>
+                    </div>
+                    <div class="text-row">
+                        <span><input type="checkbox" name="include"></span>
+                        <span><input type="checkbox" name="exclude"></span>
+                        <span>sanity</span>
+                    </div>
+                </div>
+                <!-- right col -->
+                <div class='right-col'>
+                    <!-- title -->
+                    <div class="title"><h2>Tests</h2></div>
+                    <!-- tree -->
+                    <div class="floral tree">
+                        <ul class="tree_node">
+                            <li class="dir tree_leaf">
+                                <input type="checkbox" class="cbox">envconfiguration
+                                <ul class="tree_node">
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Environment Configuration – Gear icon []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Environment Configuration Test [demoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dir tree_leaf">
+                                <input type="checkbox" class="cbox">home
+                                <ul class="tree_node">
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Home Page Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Visit Home Page using Provisioning Webtools link [demoready,login]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dir tree_leaf">
+                                <input type="checkbox" class="cbox">login
+                                <ul class="tree_node">
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Login Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Valid credentials [demoready,login]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Testing [demoready,negative,login]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dir tree_leaf">
+                                <input type="checkbox" class="cbox">navigationbar
+                                <ul class="tree_node">
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Navigation Bar Test []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Configuration Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Gear Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Info Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Inventory Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Policies Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Search360 Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Topology Link Test [nodemoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Vpn Link Test [nodemoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dir tree_leaf">
+                                <input type="checkbox" class="cbox">ncconfiguration
+                                <ul class="tree_node">
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Configuration / Blue Planet Configuration Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">API Credentials Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Dynamic Bandwidth Link threshold Monitoring Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">EMS LLDP Neighbor Discovery Negative Test for audit cycle [demoready,inactive,negative]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">EMS LLDP Neighbor Discovery Negative Test for back off period [demoready,inactive,negative]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">EMS LLDP Neighbor Discovery Negative Test for burst timeout [demoready,inactive,negative]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">EMS LLDP Neighbor Discovery Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Kafka Server Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Link Failure Recovery Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Open Flow Controller API Settings Test [demoready]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">VWAN API Settings Negative Test [demoready,negative]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">VWAN API Settings Positive Test [demoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Configuration / Configuration Manager Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">API Credentials Test [demoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Configuration / Panels Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Opens and Closes all Panels Test [demoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dir tree_leaf">
+                                        <input type="checkbox" class="cbox">Configuration / Dynamic bandwidth Resource Allocation Tests []
+                                        <ul class="tree_node">
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Dynamic BandWidth Resource Allocation negative test [demoready,negative,inactive]
+                                            </li>
+                                            <li class="dir tree_leaf">
+                                                <input type="checkbox" class="cbox">Dynamic BandWidth Resource Allocation test [demoready]
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

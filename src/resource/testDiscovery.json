@@ -1,0 +1,1007 @@
+{
+    "executor": {
+        "oenchost": ""
+    },
+    "tags": [
+        {
+            "name": "negative",
+            "state": ""
+        },
+        {
+            "name": "login",
+            "state": ""
+        },
+        {
+            "name": "nodemoready",
+            "state": ""
+        },
+        {
+            "name": "inactive",
+            "state": ""
+        },
+        {
+            "name": "demoready",
+            "state": ""
+        },
+        {
+            "name": "sanity",
+            "state": ""
+        },
+        {
+            "name": "positive",
+            "state": ""
+        }
+    ],
+    "tests": {
+        "children": [
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.envconfiguration.EnvConfigurationTest",
+                                "displayName": "Environment Configuration Test",
+                                "methodName": "test",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.envconfiguration.EnvConfigurationTest",
+                        "displayName": "Environment Configuration \u2013 Gear icon",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "envconfiguration",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.home.HomeTest",
+                                "displayName": "Visit Home Page using Provisioning Webtools link",
+                                "methodName": "homeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "login"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.home.HomeTest",
+                        "displayName": "Home Page Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "home",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.login.LoginTest",
+                                "displayName": "Valid credentials",
+                                "methodName": "loginPositiveTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "login"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.login.LoginTest",
+                                "displayName": "Testing",
+                                "methodName": "loginTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "login"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.login.LoginTest",
+                        "displayName": "Login Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "login",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Configuration Link Test",
+                                "methodName": "clickConfigurationAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Gear Link Test",
+                                "methodName": "clickGearAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Info Link Test",
+                                "methodName": "clickInfoAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Inventory Link Test",
+                                "methodName": "clickInventoryAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Policies Link Test",
+                                "methodName": "clickPoliciesAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Search360 Link Test",
+                                "methodName": "clickSearchAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Topology Link Test",
+                                "methodName": "clickTopologyAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                                "displayName": "Vpn Link Test",
+                                "methodName": "clickVpnAndGoBack",
+                                "state": "",
+                                "tags": [
+                                    "nodemoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.navigationbar.NavigationBarTest",
+                        "displayName": "Navigation Bar Test",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "navigationbar",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "API Credentials Test",
+                                "methodName": "apiCredTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "Dynamic Bandwidth Link threshold Monitoring Test",
+                                "methodName": "dynBWThresholdMonitoringTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "EMS LLDP Neighbor Discovery Negative Test for audit cycle",
+                                "methodName": "emsAuditCycleNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "EMS LLDP Neighbor Discovery Negative Test for back off period",
+                                "methodName": "emsBackOffPeriodNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "EMS LLDP Neighbor Discovery Negative Test for burst timeout",
+                                "methodName": "emsBurstTimeNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "EMS LLDP Neighbor Discovery Test",
+                                "methodName": "emsNeighDiscoveryTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "Kafka Server Test",
+                                "methodName": "kafkaTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "Link Failure Recovery Test",
+                                "methodName": "linkFailRecoveryTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "Open Flow Controller API Settings Test",
+                                "methodName": "openFlowControllerTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "VWAN API Settings Negative Test",
+                                "methodName": "vwanApiNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                                "displayName": "VWAN API Settings Positive Test",
+                                "methodName": "vwanApiTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCBluePlanetConfigurationTest",
+                        "displayName": "Configuration / Blue Planet Configuration Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCConfigurationManagerTest",
+                                "displayName": "API Credentials Test",
+                                "methodName": "apiCredTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCConfigurationManagerTest",
+                        "displayName": "Configuration / Configuration Manager Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCConfigurationTest",
+                                "displayName": "Opens and Closes all Panels Test",
+                                "methodName": "openCloseNetworkCreatorTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCConfigurationTest",
+                        "displayName": "Configuration / Panels Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCDynamicBandwidthResourceAllocationTest",
+                                "displayName": "Dynamic BandWidth Resource Allocation negative test",
+                                "methodName": "dynamicBandwidthNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCDynamicBandwidthResourceAllocationTest",
+                                "displayName": "Dynamic BandWidth Resource Allocation test",
+                                "methodName": "dynamicBandwidthTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCDynamicBandwidthResourceAllocationTest",
+                        "displayName": "Configuration / Dynamic bandwidth Resource Allocation Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Test",
+                                "methodName": "emsEditTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Fb config Test",
+                                "methodName": "emsFBConfig",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Fb Inventory Test",
+                                "methodName": "emsFBInventory",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Flow Statistics Test",
+                                "methodName": "emsFlowStatistics",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Neighbour Discovery Test",
+                                "methodName": "emsNeighbourDiscovery",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration Port Statistics Test",
+                                "methodName": "emsPortStatistics",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration System Status Test",
+                                "methodName": "emsSystemStatus",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Configuration transceiver Inventory Test",
+                                "methodName": "emsTransceiverInventory",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                                "displayName": "EMS Monitoring Test",
+                                "methodName": "monitoringServiceEditTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCEmsTest",
+                        "displayName": "Configuration / EMS Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Network Domain Configuration Test",
+                                "methodName": "ncNetworkDomainConfiguration",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Site Configuration Test: Gateway IPv4",
+                                "methodName": "ncSiteConfigurationNegativeTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test DNS Domain",
+                                "methodName": "ncSiteConfigurationNegativeTestDNSDomain",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test DNS Search Name",
+                                "methodName": "ncSiteConfigurationNegativeTestDNSSearchName",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Gateway IPV4",
+                                "methodName": "ncSiteConfigurationNegativeTestGateWayIP4",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Default Gateway IPv6",
+                                "methodName": "ncSiteConfigurationNegativeTestGatewayIPV6",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test IPV4 Primary",
+                                "methodName": "ncSiteConfigurationNegativeTestIP4Primary",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test IPV4 Secondary",
+                                "methodName": "ncSiteConfigurationNegativeTestIPV4Secondary",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test IPV6 Primary",
+                                "methodName": "ncSiteConfigurationNegativeTestIPV6Primary",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test IPV6 Secondary",
+                                "methodName": "ncSiteConfigurationNegativeTestIPV6Secondary",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Management IPV6",
+                                "methodName": "ncSiteConfigurationNegativeTestManagementIPV6",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test NTTP Primary Server",
+                                "methodName": "ncSiteConfigurationNegativeTestNTPPrimaryServer",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Network Domain",
+                                "methodName": "ncSiteConfigurationNegativeTestNTPSecondaryServer",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Domain Selector",
+                                "methodName": "ncSiteConfigurationNegativeTestNetworkDomain",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Site Id",
+                                "methodName": "ncSiteConfigurationNegativeTestSiteId",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test Site Management",
+                                "methodName": "ncSiteConfigurationNegativeTestSiteManagement",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Negative Site Configuration Test  StSreet Address",
+                                "methodName": "ncSiteConfigurationNegativeTestStreetAddress",
+                                "state": "",
+                                "tags": [
+                                    "inactive",
+                                    "negative"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                                "displayName": "Site Configuration Test",
+                                "methodName": "ncSiteConfigurationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCNetworkCreatorTest",
+                        "displayName": "Configuration / Network Creator Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Link Utilization Negative Test for Sampling Period (negative value)",
+                                "methodName": "ncNegativeOpenFlowControllerLinkUtilizationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Link Utilization Negative Test for Sampling Period (non integer value)",
+                                "methodName": "ncNegativeOpenFlowControllerLinkUtilizationTest2",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Link Utilization Negative Test for MAX Sampling Period (negative value)",
+                                "methodName": "ncNegativeOpenFlowControllerLinkUtilizationTest3",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Link Utilization Negative Test for MAX Sampling Period (non integer value)",
+                                "methodName": "ncNegativeOpenFlowControllerLinkUtilizationTest4",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Negative Test for Publisher Configuration",
+                                "methodName": "ncNegativeOpenFlowControllerPublisherConfigurationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "negative",
+                                    "inactive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "API Credentials Test",
+                                "methodName": "ncOpenFlowControllerAPITest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "BGP App Test",
+                                "methodName": "ncOpenFlowControllerBGPAppTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Kafka Server Test",
+                                "methodName": "ncOpenFlowControllerKafkaServerTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready",
+                                    "positive"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Link Utilization Global Threshold Monitoring Test",
+                                "methodName": "ncOpenFlowControllerLinkUtilizationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                                "displayName": "Publisher Configuration Test",
+                                "methodName": "ncOpenFlowControllerPublisherConfigurationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.ncconfiguration.NCOpenFlowControllerTest",
+                        "displayName": "Configuration / Open Flow Controller Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "ncconfiguration",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.policies.DynamicBandwidthPoliciesTest",
+                                "displayName": "Dynamic Bandwidth Policy Test",
+                                "methodName": "dynamicBandWidthPolicyTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.policies.DynamicBandwidthPoliciesTest",
+                        "displayName": "Dynamic Bandwidth Policies Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.policies.GlobalPathPolicyConfigurationTest",
+                                "displayName": "Global Path Policy Test",
+                                "methodName": "globalPathPolicyConfigTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.policies.GlobalPathPolicyConfigurationTest",
+                        "displayName": "Global Path Policy Configuration Policies Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "policies",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyCanvasTest",
+                                "displayName": "Add ForwardingBox",
+                                "methodName": "addForwardingBox",
+                                "state": "",
+                                "tags": [
+                                    "sanity"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyCanvasTest",
+                                "displayName": "Topology Deploy Test",
+                                "methodName": "deploySubmit",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyCanvasTest",
+                        "displayName": "Network Creator / Topology Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    },
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyTest",
+                                "displayName": "Topology Export Test",
+                                "methodName": "deployExport",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyTest",
+                                "displayName": "Topology Deploy Test",
+                                "methodName": "deploySubmit",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.topology.NCTopologyTest",
+                        "displayName": "Network Creator / Topology Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "topology",
+                "type": "package"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.vpn.GlobalVpnConfigurationTest",
+                                "displayName": "Global VPN Configuration Export Test",
+                                "methodName": "exportTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            },
+                            {
+                                "className": "com.kgpco.vz.vertex.oenc.tests.vpn.GlobalVpnConfigurationTest",
+                                "displayName": "Global VPN Configuration Test",
+                                "methodName": "globalVpnConfigurationTest",
+                                "state": "",
+                                "tags": [
+                                    "demoready"
+                                ],
+                                "type": "testcase"
+                            }
+                        ],
+                        "className": "com.kgpco.vz.vertex.oenc.tests.vpn.GlobalVpnConfigurationTest",
+                        "displayName": "VPN Tests",
+                        "state": "",
+                        "tags": [],
+                        "type": "class"
+                    }
+                ],
+                "displayName": "vpn",
+                "type": "package"
+            }
+        ],
+        "displayName": "com.kgpco.vz.vertex.oenc.tests",
+        "type": "package"
+    }
+}
