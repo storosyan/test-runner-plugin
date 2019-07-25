@@ -1,4 +1,6 @@
 "use strict";
+var idIndex = 1;
+var negArr = [], loginArr = [], demoreadyArr = [], nodemoreadyArr = [], positiveArr = [], sanityArr = [], inactiveArr = [];
 
 let buildTestsList = function (parentElement, items) {
   var i, li, inp, spn;
@@ -14,12 +16,16 @@ let buildTestsList = function (parentElement, items) {
 
     // u.insertBefore(collspan, );
     parentElement.append(u);
+    
     for (i = 0; i < items.children.length; i++) {
+      var id = "chkbx_"+idIndex;
       li = document.createElement("li");
       inp = document.createElement("input");
       inp.type = "checkbox";
       inp.value = items.children[i].displayName;
       inp.className = "cbox";
+      inp.id = id;
+      
       li.append(inp);
       spn = document.createElement("span");
       spn.className = "dir";
@@ -33,12 +39,44 @@ let buildTestsList = function (parentElement, items) {
           " [" +
           items.children[i].tags +
           "]";
+          // tracking tagname id's to separate arrays.
+          var tagname = items.children[i].tags.toString();
+          //console.log(tagname.length)
+          var tagsSplit = [];
+          idIndex += 1;
+          if (typeof tagname !== "undefined" && tagname.length){
+            //console.log(tagname)
+            tagsSplit = tagname.split(',');
+          }
+          
+          if (tagsSplit.indexOf('negative') >= 0) {
+            negArr.push(id);
+          }
+          if (tagsSplit.indexOf('demoready') >= 0) {
+            demoreadyArr.push(id);
+          }
+           if (tagsSplit.indexOf('positive') >= 0) {
+            positiveArr.push(id);
+          } 
+          if (tagsSplit.indexOf('nodemoready') >= 0) {
+            nodemoreadyArr.push(id);
+          } 
+          if (tagsSplit.indexOf('sanity') >= 0) {
+            sanityArr.push(id);
+          } 
+          if (tagsSplit.indexOf('login') >= 0) {
+            loginArr.push(id);
+          } 
+          if (tagsSplit.indexOf('inactive') >= 0) {
+            inactiveArr.push(id);
+          }
       } else {
         spn.innerHTML += "&nbsp;" + items.children[i].displayName;
       }
       li.append(spn);
       buildTestsList(li, JSON.parse(JSON.stringify(items.children[i])));
       u.append(li);
+      
     }
   }
 };
@@ -65,6 +103,7 @@ let buildTagsList = function (parentElement, items) {
             console.log(items.tags[i])
             var li = document.createElement('li');
             li.id = "tags_"+i
+            li.tgName = items.tags[i].name
             var rowSpan = document.createElement('span')
             rowSpan.id = "tag_" + i
             var chk1 = document.createElement('input');
@@ -73,6 +112,8 @@ let buildTagsList = function (parentElement, items) {
             chk1.id = "tags_include_" + i;
             chk2.id = "tags_exclude_"+i;
             chk2.type = 'checkbox';
+            chk1.className = 'tgBoxInclude';
+            chk2.className = 'tgBoxExclude';
             rowSpan.innerHTML = items.tags[i].name
 
             //console.log(chk)
@@ -108,9 +149,87 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
   events: {
     "click .dir": "toggle",
     "change .floral": "checkbox",
-    "click .btn": "displayOutput"
+    "click .btn": "displayOutput",
+    "change .tgBoxInclude": "includetagsToggle",
+    "change .tgBoxExclude": "excludetagsToggle"
   },
 
+  includetagsToggle: function(e) {
+    //console.log(this.$(e.currentTarget).prop('checked'));
+    var tagName = e.currentTarget.parentElement.tgName
+    var idsToCheck = [];
+    if (tagName == 'login') {
+      idsToCheck = loginArr
+    }
+    if (tagName == 'demoready') {
+      idsToCheck = demoreadyArr
+    }
+    if (tagName == 'negative') {
+      idsToCheck = negArr
+    }
+    if (tagName == 'positive') {
+      idsToCheck = positiveArr
+    }
+    if (tagName == 'nodemoready') {
+      idsToCheck = nodemoreadyArr
+    }
+    if (tagName == 'sanity') {
+      idsToCheck = sanityArr
+    }
+    if (tagName == 'inactive') {
+      idsToCheck = inactiveArr
+    }
+    for(var i = 0; i < idsToCheck.length; i ++) {
+        //console.log(this.$("#"+idsToCheck[i]).prop('checked'));
+        if (this.$(e.currentTarget).prop('checked') == true) {
+          if (this.$("#"+idsToCheck[i]).prop('checked') == false){
+            this.$("#"+idsToCheck[i]).prop("checked", true);
+          }
+        } else {
+          this.$("#"+idsToCheck[i]).prop("checked", false);
+        }
+    }
+  },
+
+  excludetagsToggle: function(e) {
+    //console.log(this.$(e.currentTarget).prop('checked'));
+    var tagName = e.currentTarget.parentElement.tgName
+    var idsToCheck = [];
+    if (tagName == 'login') {
+      idsToCheck = loginArr
+    }
+    if (tagName == 'demoready') {
+      idsToCheck = demoreadyArr
+    }
+    if (tagName == 'negative') {
+      idsToCheck = negArr
+    }
+    if (tagName == 'positive') {
+      idsToCheck = positiveArr
+    }
+    if (tagName == 'nodemoready') {
+      idsToCheck = nodemoreadyArr
+    }
+    if (tagName == 'sanity') {
+      idsToCheck = sanityArr
+    }
+    if (tagName == 'inactive') {
+      idsToCheck = inactiveArr
+    }
+    for(var i = 0; i < idsToCheck.length; i ++) {
+        //console.log(this.$("#"+idsToCheck[i]).prop('checked'));
+        if (this.$(e.currentTarget).prop('checked') == true) {
+          if (this.$("#"+idsToCheck[i]).prop('checked') == true){
+            this.$("#"+idsToCheck[i]).prop("checked", false);
+          }
+        }
+      }
+  },
+
+  //$("#checkbox").prop("checked", true);
+
+  // Uncheck
+  //$("#checkbox").prop("checked", false);
   toggle: function (e) {
     e.stopPropagation();
     this.$(e.currentTarget.parentElement)
@@ -183,7 +302,7 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
     tests.style.width = "67%";
     main.append(tests);
     var testHeading = document.createElement("h3");
-    testHeading.innerHTML += "Available Tests";
+    testHeading.innerHTML += " Tests";
     tests.append(testHeading);
     var testsDiv = document.createElement("div");
     testsDiv.className = "floral";
@@ -193,8 +312,14 @@ var TestRunnerTreeView = Backbone.Marionette.View.extend({
 
     buildTagsList(tagsDiv, js);
     buildTestsList(testsDiv, js.tests);
-
-    return this ;
+    // console.log(demoreadyArr);
+    // console.log(nodemoreadyArr);
+    // console.log(negArr);
+    // console.log(loginArr);
+    // console.log(sanityArr);
+    // console.log(positiveArr);
+    // console.log(inactiveArr);
+    return this;
   }
 });
 
@@ -227,6 +352,58 @@ class TestRunnerTreeLayout extends allure.components.AppLayout {
   }
   onRouteUpdate(url) {}
 }
+/////////
+
+ ////<li methodname = '<%- item.method %>' tag_names = '<%- item.tags %>' ><%- item.name %></li>
+        // var methodsView = Backbone.View.extend({
+        //   template: _.template(`
+        //                       <ul>
+        //                         <% _.each(items, function(item) { %>
+        //                           <li><%- item.name %></li>
+        //                         <% }) %>
+        //                       </ul>
+        //                       `)
+
+        // });
+        // for (var i = 0; i < items.children.length; i++) {
+        //     //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //     if (typeof items.children[i].tags !== 'undefined') {
+        //         //console.log(items.children[i].displayName + ' --- ' + items.children[i].tags );
+        //     } else {
+        //         //console.log(items.children[i].displayName);
+        //     }
+        //     var items2 = items.children[i]
+        //     for (var j = 0; j < items2.children.length; j++) {
+        //         //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //         if (typeof items2.children[j].tags !== 'undefined') {
+        //             //console.log(items2.children[j].displayName + ' --- ' + items2.children[j].tags );
+        //         } else {
+        //             //console.log(items2.children[j].displayName);
+        //         }
+        //         var items3 = items2.children[j]
+        //         var methodsCollection = Backbone.Collection.extend({});
+        //         var methodsCol = new methodsCollection();
+        //         for (var k = 0; k < items3.children.length; k++) {
+        //           //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //           if (typeof items3.children[k].tags !== 'undefined') {
+        //               //console.log(items3.children[k].displayName + ' --- ' + items3.children[k].tags );
+        //               //var method = new methodMdl({method :items3.children[k], name : items3.children[k].displayName, tags: items3.children[k].tags})
+        //               var method = {method :items3.children[k], name : items3.children[k].displayName, tags: items3.children[k].tags}
+        //               methodsCol.add(method);
+        //           } else {
+        //               //console.log(items3.children[k].displayName);
+        //           }
+        //         }
+        //         console.log(methodsCol);
+        //         var methodsV = new methodsView({collection:methodsCol});
+        //         methodsV.render();
+        //         console.log(methodsV.el);
+        //         break;
+        //     }
+        // }
+
+        //return this;
+    
 
 allure.api.addTab("tests", {
   title: "tab.tests.name",
