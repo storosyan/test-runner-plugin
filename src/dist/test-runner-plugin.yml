@@ -5,3 +5,5 @@ extensions:
 - com.kgpco.vz.allure.plugin.TestRunnerPlugin
 jsFiles:
 - index.js
+cssFiles:
+- testexecutor.css
