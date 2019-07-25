@@ -1,8 +1,8 @@
-#Commands to run/start Allure  
-##In two steps  
+# Commands to run/start Allure  
+## In two steps  
 allure generate -c allure-results/ -o allure-report/  
 allure open allure-report/ -p 3333  
-##In one step  
+## In one step  
 allure serve allure-results/ -p 3333  
 
 Note: remember, when run allure generate the allure-report folder will be overwritten 
