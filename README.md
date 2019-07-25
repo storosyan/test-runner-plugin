@@ -6,6 +6,6 @@ allure open allure-report/ -p 3333
 allure serve allure-results/ -p 3333  
 
 Note: remember, when run allure generate the allure-report folder will be overwritten 
-and you will use all your local changes in allure-report/plugins/yourplugin/ folder 
+and you will loose all your local changes in allure-report/plugins/yourplugin/ folder 
 (index.js etc.)  
 
