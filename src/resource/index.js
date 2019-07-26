@@ -9,21 +9,10 @@ class TestTag extends Backbone.Model {
 
 class TestTags extends Backbone.Collection {
     initialize(tags) {
-        //alert('tags-collection')
-        //alert(tags)
-        //tags.forEach(function(item, index) {
-        //    alert(item)
-        //    tag = new TestTag(item)
-        //    this.add(tag)
-        //});
         this.tags = tags;
     }
-
-    parse(response) {
-        alert('parse')
-    }
 };
-
+/*
 class TestCase extends Backbone.Model {
     initialize({testCase}) {
         this.className = testCase.get('className'),
@@ -77,7 +66,7 @@ class Tests extends Backbone.Model {
         this.testClasses = testPackage.get('children')
     }
 };
-
+*/
 class TestTagView extends Backbone.Marionette.View {
     initialize(tag) {
         this.tagTemplate = "<div class='text-row'>" +
@@ -101,14 +90,23 @@ class TestTagsView extends Backbone.Marionette.View {
         this.title = "Tags";
         this.tagName = "Tag Name";
         this.tags = tags;
-        this.tagsTemplate = "<div class='left-col'>" +
+        this.tagsTemplate = "<div class='panel'>" +
             "<div class='title'><h2><%=title%></h2></div>" +
             "<div class='text-row'>" +
             "<span class='include'>√</span>" +
             "<span class='exclude'>x</span>" +
             "<span><%=tagName%></span>" +
             "</div><%=tagContent%></div>";
+        this.listenTo(this, 'change:includeTag', this.includeTag());
         this.render();
+    }
+
+    includeTag() {
+        //alert('include tag')
+    }
+
+    excludeTag() {
+        //alert('exclude tag')
     }
 
     render() {
@@ -126,35 +124,35 @@ class TestTagsView extends Backbone.Marionette.View {
 
 class TestRunnerView extends Backbone.Marionette.View {
     initialize(model) {
-        let data = JSON.parse(JSON.stringify(model))
-        this.tests = data.tests;
-        this.tags = new TestTags(data.tags);
-        this.executor = new TestExecutor(data.executor);
-        this.gridTemplate = "<div class='grid'><%=grid%></div>";
-    }
-    testCase(ti, ind) {
-        var html = "";
-        var label = ti.displayName;
-        html = '<p>' + ind + label + '</p>';
-        var children = ti.children;
-        if (typeof children !== 'undefined') {
-            var i;
-            for (i = 0; i < children.length; i++) {
-                html += this.testCase(JSON.parse(JSON.stringify(children[i])), ind + "  ") + '\n';
-            }
-        }
-        return html;
+        this.model = model;
+        this.gridTemplate =
+            "<div class='grid'>" +
+                "<div class='panel'>" +
+                    "<%=execView%>" +
+                "</div>" +
+                "<div class='panel'>" +
+                    "<div class='left-col'>" +
+                        "<%=tagsView%>" +
+                    "</div>" +
+                    "<div class='right-col'>" +
+                        "<%=testsView%>" +
+                    "</div>" +
+                "</div>" +
+            "</div>";
     }
 
     render() {
-        let tagsView = new TestTagsView(this.tags);
+        this.tagsView = new TestTagsView(this.model.tags).el.innerHTML;
         //let testsView = new TestTagsView(this.tags);
-        let execView = new TestExecutorView(this.executor);
-        let content = execView.el.innerHTML + tagsView.el.innerHTML;
-        let gridView = TemplateParser(this.gridTemplate, {grid:content})
-        //this.$el.append(gridView);
+        this.execView = new TestExecutorView(this.model.executor).el.innerHTML;
+        this.testsView = new TestTestsView(this.model).el.innerHTML;
+        let gridView = TemplateParser(this.gridTemplate, this)
         this.$el.html(gridView);
         return this;
+    }
+
+    onRender() {
+        //alert("onrender")
     }
 
 };
@@ -166,19 +164,20 @@ class TestExecutorView extends Backbone.Marionette.View {
         this.testCount = 'Total number of selected Tests cases';
         this.runButtonCaption = 'Run Tests';
         this.exec = new TestExecutor(exec);
-        /*
-        this.template =  _.template($(
-        */
-        //this.template =  TemplateCompiler(
 
         this.execTemplate =
-            "<div class='panel'><div class='row'>" +
+            "<div class='row'>" +
             "<div class='title'><h2><%=title%></h2></div>" +
             "<div class='panel'><span class='text-row'><%=onceHostLabel%><input type='text' name='' value=''/></span></div>" +
             "<div class='panel'><span class='text-row'><%=testCount%></span><span>100</span></div>" +
             "<div class='panel'><span class='text-row'><button type='button' name='button'><%=runButtonCaption%></button></span></div>" +
-            "</div></div>";
+            "</div>";
+        this.listenTo(this, 'change:button', this.buttonClicked());
         this.render()
+    }
+
+    buttonClicked() {
+        //alert('button Clicked')
     }
 
     render() {
@@ -189,20 +188,75 @@ class TestExecutorView extends Backbone.Marionette.View {
     }
 }
 
-class TestTestsView extends Backbone.Marionette.View {
+class TestNodeView extends Backbone.Marionette.View {
     initialize(test) {
+        this.node = new TestLeafView();
+        this.testsTemplate = "<ul class='tree_node'>" +
+            "<%=node%>" +
+            "</ul>";
+    }
+
+    render(test) {
+        let item = this.node.render(test).el.innerHTML;
+        let content = TemplateParser(this.testsTemplate, {node:item})
+        this.$el.html(content);
+        return this;
+    }
+
+}
+
+class TestLeafView extends Backbone.Marionette.View {
+    initialize() {
+        this.testsTemplate = "<li class='dir tree_leaf'>" +
+            "<input type='checkbox' class='cbox'>" +
+            "<%=displayName%>" +
+            "</li>"
+    }
+    render(test) {
+        let content = TemplateParser(this.testsTemplate, test)
+        this.$el.html(content);
+        return this;
+    }
+}
+
+class TestTestsView extends Backbone.Marionette.View {
+    initialize(model) {
+        this.node = new TestNodeView();
+        this.leaf = new TestLeafView();
         this.title = 'Available Tests';
-        this.exec = new TestExecutor(exec);
+        this.tests = model.tests;
+        this.allTests = model.allTests;
         this.testsTemplate =
-            "<div class='right-col'>" +
+            "<div class='panel'>" +
             "<div class='title'><h2><%=title%></h2></div>" +
             "<div class='tree'><%=content%></div></div>";
-
         this.render()
     }
 
     render() {
-        //this.$el.html(this.template(this.tag.toJSON()));
+        this.content = "";
+        let newNode = true;
+        let firstNode = true;
+        for (var i in this.allTests) {
+            if (this.allTests[i].type === "testcase") {
+                if (newNode) {
+                    this.content += "<ul class='tree_node'>";
+                    newNode = false;
+                }
+                this.content += this.leaf.render(this.allTests[i]).el.innerHTML
+                firstNode = false;
+            } else {
+                if (!firstNode) {
+                    this.content += "</ul>";
+                }
+                this.content += "<ul class='tree_node'>";
+                if (!newNode) {
+                    this.content += "</ul>";
+                }
+                newNode = true;
+                this.content += this.leaf.render(this.allTests[i]).el.innerHTML
+            }
+        }
         let execContent = TemplateParser(this.testsTemplate, this)
         this.$el.html(execContent);
         return this;
@@ -218,19 +272,84 @@ class TestExecutor extends Backbone.Model {
 };
 
 
+class AvailableTestsView extends Backbone.Marionette.View {
+}
+
+class AvailableTest extends Backbone.Model {
+    initialize({item, id}) {
+        this.displayName = item['displayName'];
+        this.id = id + "." + this.displayName;
+        this.state = "";
+        this.type = item['type'];
+        this.tags = item['tags'];
+        if (item['className']) {
+            this.className = item['className']
+        };
+        if (item['methodName']) {
+            this.methodName = item['methodName']
+        };
+    }
+}
+
 class TestRunnerModel extends Backbone.Model {
     initialize(models, {url}) {
         this.url = url;
     }
-};
+    getFlattenTestResults(item, list, id) {
+        var newTest = new AvailableTest({item:item, id:id});
+        list.push(newTest);
+
+        if (item.children) {
+            var i;
+            for (i in item.children) {
+                this.getFlattenTestResults(item.children[i], list, newTest['id']);
+            }
+        }
+    }
+
+    parse(data) {
+        //this.tests = JSON.parse(JSON.stringify(data["tests"]));
+        this.tests = data["tests"];
+        this.allTests = []
+        this.getFlattenTestResults(this.tests, this.allTests, "root");
+        this.tags = new TestTags(data["tags"]);
+        this.executor = new TestExecutor(data["executor"]);
+    }
+
+    getFirstTest() {
+        if (this.allTests.length > 0 ) {
+            return this.allTests[0];
+        }
+    }
+
+    getLastTest() {
+        if (this.allTests.length > 0 ) {
+            return this.allTests[this.allTests.length - 1];
+        }
+    }
+
+    getNextTest(testResultUid) {
+        const index = this.allTests.findIndex(testResult => testResult.uid === testResultUid);
+        if (index < this.allTests.length - 1) {
+            return this.allTests[index + 1];
+        }
+    }
+
+    getPreviousTest(testResultUid) {
+        const index = this.allTests.findIndex(testResult => testResult.uid === testResultUid);
+        if (index > 0) {
+            return this.allTests[index - 1];
+        }
+    }
+
+}
+
 
 class TestRunnerLayout extends allure.components.AppLayout {
 
     initialize({url}) {
         super.initialize();
-        this.model = new TestRunnerModel([], {
-            url
-        });
+        this.model = new TestRunnerModel([], {url});
     }
 
 
