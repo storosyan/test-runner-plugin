@@ -17,7 +17,7 @@ Build the plugin my running
 mvn package  
 from the root folder of the plugin..
 When you build a plugin, you should come up with the following structure:  
-'''bash
+'''  
 my-plugin  
 ├── target  
 │   └── test-runner-plugin-0.0.1-SNAPSHOT.jar  
@@ -29,7 +29,7 @@ my-plugin
             └── index.js 
 '''
 The content of the /dist folder and the jar file must be copied into plugins folder of the commandline distribution. 
-'''bash
+'''  
 allure-commandline  
 ├── bin  
 ├── config  
