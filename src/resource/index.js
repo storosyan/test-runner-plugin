@@ -1,72 +1,11 @@
 'use strict';
 
-class TestTag extends Backbone.Model {
-    initialize(tag) {
-        this.name = tag.name;
-        this.state = tag.state;
-    }
-};
-
 class TestTags extends Backbone.Collection {
     initialize(tags) {
         this.tags = tags;
     }
 };
-/*
-class TestCase extends Backbone.Model {
-    initialize({testCase}) {
-        this.className = testCase.get('className'),
-        this.displayName = testCase.get('displayName'),
-        this.methodName = testCase.get('methodName'),
-        this.state = "",
-        this.tags = testCase.get('tags')
-    }
-};
 
-class TestClass extends Backbone.Model {
-    initialize({testClass}) {
-        this.className = testCase.get('className'),
-        this.displayName = testCase.get('displayName'),
-        this.state = "",
-        this.testCases = testClass.get('children'),
-        this.tags = testCase.get('tags')
-    }
-};
-
-class TestCases extends Backbone.Collection {
-    initialize({testCases}) {
-        this.testCases = testCases;
-    }
-};
-
-class TestClasses extends Backbone.Collection {
-    initialize({testClasses}) {
-        this.testClasses = testClasses;
-    }
-};
-
-class TestPackages extends Backbone.Collection {
-    initialize({testPackages}) {
-        this.testPackages = testPackages;
-    }
-};
-
-class TestPackage extends Backbone.Model {
-    initialize({testPackage}) {
-        this.displayName = testPackage.get('displayName'),
-        this.state = "",
-        this.testClasses = testPackage.get('children')
-    }
-};
-
-class Tests extends Backbone.Model {
-    initialize({test}) {
-        this.displayName = testPackage.get('displayName'),
-        this.state = "",
-        this.testClasses = testPackage.get('children')
-    }
-};
-*/
 class TestTagView extends Backbone.Marionette.View {
     initialize(tag) {
         this.tagTemplate = "<div class='text-row'>" +
@@ -187,7 +126,7 @@ class TestExecutorView extends Backbone.Marionette.View {
         return this;
     }
 }
-
+/*
 class TestNodeView extends Backbone.Marionette.View {
     initialize(test) {
         this.node = new TestLeafView();
@@ -204,7 +143,7 @@ class TestNodeView extends Backbone.Marionette.View {
     }
 
 }
-
+*/
 class TestLeafView extends Backbone.Marionette.View {
     initialize() {
         this.testsTemplate = "<li class='dir tree_leaf'>" +
@@ -221,7 +160,7 @@ class TestLeafView extends Backbone.Marionette.View {
 
 class TestTestsView extends Backbone.Marionette.View {
     initialize(model) {
-        this.node = new TestNodeView();
+        //this.node = new TestNodeView();
         this.leaf = new TestLeafView();
         this.title = 'Available Tests';
         this.tests = model.tests;
@@ -271,9 +210,6 @@ class TestExecutor extends Backbone.Model {
     }
 };
 
-
-class AvailableTestsView extends Backbone.Marionette.View {
-}
 
 class AvailableTest extends Backbone.Model {
     initialize({item, id}) {
