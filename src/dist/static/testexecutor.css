@@ -1,65 +1,111 @@
 .grid {
-    width: 100%;
-    max-height: 100%;
-    font-size: 14px;
-    font-weight: normal;
     color: #000;
-    font-family: Helvetica,Arial,sans-serif;
-    margin-bottom: 5px;
-    margin-right: 5px;
-    margin-top: 5px;
-    margin-left: 5px;
+    font-family: Helvetica, Arial, sans-serif;
 }
-.panel {
-    width: 100%;
-    margin-bottom: 5px;
+
+.test-runner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px 15px 0;
+    max-height: 100%;
+    overflow: auto;
 }
-.text-row {
-    width:100%;
-    margin-left: 5px;
-    font-size: 12x;
+
+.test-runner-content h2 {
+    margin-top: 0px;
 }
+
 .row {
-    width:100%;
+    border: 1px solid #e5e5e5;
+    padding: 15px;
+}
+
+.test-executor {
     margin-bottom: 15px;
-    border: 1px;
-    border-style:solid;
-    border-color: gray;
-    margin-right: 5px;
+}
+
+.test-executor .panel {
+    padding: 5px 0;
+}
+
+.test-executor .panel .host-input {
+    width: 350px;
+    height: 32px;
+    padding: 10px;
+    margin-left: 30px;
+    border: 1px solid #e5e5e5;
+}
+
+.test-executor .panel .host-input:hover {
+    border-color: #888;
+}
+
+.test-executor .panel .execute-button {
+    padding: 8px 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 2px;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.test-executor .panel .execute-button:hover {
+    border-color: #888;
 }
 
 .left-col {
-    width:40%;
-    min-width:100px;
-    border: 1px;
-    border-style:solid;
-    border-color: gray;
-    margin-bottom: 13px;
-    margin-right: 13px;
-    float:left;
+    width: 40%;
+    min-width: 100px;
+    border: 1px solid #e5e5e5;
+    float: left;
+    padding: 15px;
 }
+
+.left-col .text-row {
+    padding: 8px 0;
+}
+
+.left-col .tags-list-title {
+    font-weight: 600;
+}
+
+.left-col .tags-list-title .exclude {
+    padding-left: 8px;
+}
+
+.left-col .text-row span {
+    padding-right: 10px;
+    font-size: 15px;
+}
+
+.left-col .text-row span input {
+    cursor: pointer;
+}
+
 .right-col {
-    width:58%;
-    min-width:200px;
-    border: 1px;
-    border-style:solid;
-    border-color: gray;
-    margin-bottom: 13px;
-    float:right;
+    width: 59%;
+    min-width: 200px;
+    border: 1px solid #e5e5e5;
+    float: right;
+    padding: 15px;
 }
+
 .title {
     font-weight: lighter;
     margin-top: 0;
     margin-bottom: 15px;
-    margin-left: 5px;
 }
+
 .include {
     width: 35px;
-    font-color: green;
+    color: green;
     text-align: justify;
     margin-left: 5px;
     margin-right: 5px;
 }
+
 .exclude {
     width: 15px;
     color: red;
@@ -67,13 +113,24 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+
 .tree {
     overflow: auto;
-    height: 90vh;
+    height: 68vh;
 }
+
 .tree_node {
     list-style: none;
+    padding-left: 25px;
 }
+
 .tree_leaf {
-    cursor: pointer; margin-top: 10px;
+    cursor: pointer;
+    margin: 12px 0;
+}
+
+.tree_leaf .cbox {
+    margin-right: 10px;
+    cursor: pointer;
+    padding: 3px;
 }
