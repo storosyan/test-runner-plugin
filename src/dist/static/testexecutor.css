@@ -22,7 +22,7 @@
 
 .row {
     border: 1px solid #e5e5e5;
-    padding: 15px;
+    padding: 10px;
 }
 
 .test-executor {
@@ -56,6 +56,8 @@
     border-radius: 2px;
     margin-top: 8px;
     cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .text-label {
@@ -106,7 +108,7 @@
 .title {
     font-weight: lighter;
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .include {
@@ -127,7 +129,7 @@
 
 .tree {
     overflow: auto;
-    height: 68vh;
+    height: 59vh;
 }
 
 .tree_node {
