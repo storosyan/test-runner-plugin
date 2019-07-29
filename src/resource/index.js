@@ -101,56 +101,73 @@ class TestTagsView extends Backbone.Marionette.View {
     }
 }
 
-class TestRunnerView extends Backbone.Marionette.View {
-    initialize(model) {
+var TestRunnerView = Backbone.Marionette.View.extend ({
+    className: "grid",
+    initialize: function(model) {
         this.model = model;
         this.gridTemplate =
-            "<div class='grid'>" +
-                "<div class='panel'>" +
-                    "<%=execView%>" +
+            "<div class='panel'>" +
+                "<%=execView%>" +
+            "</div>" +
+            "<div class='panel'>" +
+                "<div class='left-col'>" +
+                    "<%=tagsView%>" +
                 "</div>" +
-                "<div class='panel'>" +
-                    "<div class='left-col'>" +
-                        "<%=tagsView%>" +
-                    "</div>" +
-                    "<div class='right-col'>" +
-                        "<%=testsView%>" +
-                    "</div>" +
+                "<div class='right-col'>" +
+                    "<%=testsView%>" +
                 "</div>" +
             "</div>";
-        //this.listenTo(this, 'change:abcdincludeTag', this.includeTag());
-    }
+    },
 
-    includeTag() {
-        //alert('include tag')
-    }
+    events: {
+        //'click .execute-button': 'buttonClicked',
+        "submit #test-run-form": "runTests",
+        'click .tree': 'treeClicked',
+        'click .include': 'include',
+        'click .exclude': 'exclude',
+    },
 
-    excludeTag() {
-        //alert('exclude tag')
-    }
+    include: function(e) {
+        let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
+        if (exclude) {
+            e.currentTarget.parentElement.children[1].children[0].checked = false;
+        }
+    },
 
-    render() {
-        //alert('TestRunnerView:render')
+    exclude: function(e) {
+        let include = e.currentTarget.parentElement.children[1].children[0].checked;
+        if (include) {
+            e.currentTarget.parentElement.children[0].children[0].checked = false;
+        }
+    },
+
+    runTests: function(e) {
+        alert('runner:runTests Clicked')
+    },
+
+    buttonClicked: function(e) {
+        alert('runner:button Clicked')
+    },
+
+    treeClicked: function(e) {
+        alert('runner:tree Clicked')
+    },
+
+    render: function() {
         this.tagsView = new TestTagsView(this.model.tags).el.innerHTML;
         this.execView = new TestExecutorView(this.model.executor).el.innerHTML;
         this.testsView = new TestTestsView(this.model).el.innerHTML;
         let gridView = TemplateParser(this.gridTemplate, this)
         this.$el.html(gridView);
-        //let dom = DOMTemplateParser(gridView);
-        //alert(dom)
-        //this.$el.add(dom);
-
         return this;
     }
+});
 
-    onRender() {
-        //alert("onrender")
-    }
-
-};
-
-class TestExecutorView extends Backbone.Marionette.View {
-    initialize(exec) {
+var TestExecutorView = Backbone.Marionette.View.extend({
+    //tagName: "form",
+    //id: "test-run-form",
+    //className: "run-form",
+    initialize: function(exec) {
         this.title = 'Test Executor';
         this.onceHostLabel = 'OENC host';
         this.testCountLabel = 'Total number of selected Tests cases';
@@ -158,26 +175,20 @@ class TestExecutorView extends Backbone.Marionette.View {
         this.testCount = 100;
         this.runButtonCaption = 'Run Tests';
         this.exec = new TestExecutor(exec);
-
         this.execTemplate =
-            "<div class='row test-executor'>" +
+            "<form id='test-run-form' class='run-form'><div class='row test-executor'>" +
             "<div class='title'><h2><%=title%></h2></div>" +
-            "<div class='panel'><span class='text-row host'><%=onceHostLabel%></span>" +
-            "<span class='text-row'><input class='host-input' type='text' name='' value=''/></span></div>" +
-            "<div class='panel'><span class='text-row text-label'><%=cleanLabel%></span>" +
-            "<span class='text-row'><input type='checkbox' name='clean' class='clbox'></span></div>" +
-            "<div class='panel'><span class='text-row text-label'><%=testCountLabel%></span><span><%=testCount%></span></div>" +
-            "<div class='panel'><span class='text-row'><button class='execute-button' type='button' name='button'><%=runButtonCaption%></button></span></div>" +
-            "</div>";
-        this.listenTo(this, 'change:button', this.buttonClicked());
-        this.render()
-    }
+            "<div class='panel'><label class='text-row host' for='host_text'><%=onceHostLabel%></label>" +
+            "<input class='host-input' type='text' name='' id='host_text' value=''/></div>" +
+            "<div class='panel'><label class='text-row text-label' for='id_clean'><%=cleanLabel%></label>" +
+            "<input type='checkbox' name='clean' id='id_clean' class='clbox'></div>" +
+            "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label><%=testCount%></label></div>" +
+            "<div class='panel'><span class='text-row'><button class='execute-button' id='run'><%=runButtonCaption%></button></span></div>" +
+            "</div></form>";
+        this.render();
+    },
 
-    buttonClicked() {
-        //alert('button Clicked')
-    }
-
-    render() {
+    render: function() {
         //this.$el.html(this.template(this.tag.toJSON()));
         let execContent = TemplateParser(this.execTemplate, this)
         this.$el.html(execContent);
@@ -185,7 +196,7 @@ class TestExecutorView extends Backbone.Marionette.View {
         //this.$el.add(dom);
         return this;
     }
-}
+});
 
 class TestNodeView extends Backbone.Marionette.View {
     initialize() {
@@ -328,6 +339,7 @@ class TestRunnerModel extends Backbone.Model {
     initialize(models, {url}) {
         this.url = url;
     }
+    /*
     getFlattenTestResults(item, list, id) {
         var newTest = new AvailableTest({item:item, id:id});
         list.push(newTest);
@@ -339,11 +351,11 @@ class TestRunnerModel extends Backbone.Model {
             }
         }
     }
-
+*/
     parse(data) {
         this.tests = data["tests"];
-        this.allTests = []
-        this.getFlattenTestResults(this.tests, this.allTests, "root");
+        //this.allTests = []
+        //this.getFlattenTestResults(this.tests, this.allTests, "root");
         this.tags = new TestTags(data["tags"]);
         this.executor = new TestExecutor(data["executor"]);
     }
@@ -352,7 +364,6 @@ class TestRunnerModel extends Backbone.Model {
 
 
 class TestRunnerLayout extends allure.components.AppLayout {
-
     initialize({url}) {
         super.initialize();
         this.model = new TestRunnerModel([], {url});
