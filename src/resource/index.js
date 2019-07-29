@@ -1,428 +1,418 @@
-'use strict';
+"use strict";
+var idIndex = 1;
+var negArr = [], loginArr = [], demoreadyArr = [], nodemoreadyArr = [], positiveArr = [], sanityArr = [], inactiveArr = [];
 
-class TestTags extends Backbone.Collection {
-    initialize(tags) {
-        this.tags = tags;
+let buildTestsList = function (parentElement, items) {
+  var i, li, inp, spn;
+  if (typeof items.children !== "undefined") {
+    var u = document.createElement("ul");
+    u.style.listStyle = "none";
+    // u.insertBefore()
+    // var exspan = document.createElement("span");
+    // exspan.innerHTML += "expanded";
+
+    // var collspan = document.createElement("span");
+    // collspan.innerHTML += "collapsed";
+
+    // u.insertBefore(collspan, );
+    parentElement.append(u);
+    
+    for (i = 0; i < items.children.length; i++) {
+      var id = "chkbx_"+idIndex;
+      li = document.createElement("li");
+      inp = document.createElement("input");
+      inp.type = "checkbox";
+      inp.value = items.children[i].displayName;
+      inp.className = "cbox";
+      inp.id = id;
+      
+      li.append(inp);
+      spn = document.createElement("span");
+      spn.className = "dir";
+      //   li.className = "dir";
+      spn.style.cursor = "pointer";
+      li.style.marginTop = "10px";
+      if (typeof items.children[i].tags !== "undefined") {
+        spn.innerHTML +=
+          "&nbsp;" +
+          items.children[i].displayName +
+          " [" +
+          items.children[i].tags +
+          "]";
+          // tracking tagname id's to separate arrays.
+          var tagname = items.children[i].tags.toString();
+          //console.log(tagname.length)
+          var tagsSplit = [];
+          idIndex += 1;
+          if (typeof tagname !== "undefined" && tagname.length){
+            //console.log(tagname)
+            tagsSplit = tagname.split(',');
+          }
+          
+          if (tagsSplit.indexOf('negative') >= 0) {
+            negArr.push(id);
+          }
+          if (tagsSplit.indexOf('demoready') >= 0) {
+            demoreadyArr.push(id);
+          }
+           if (tagsSplit.indexOf('positive') >= 0) {
+            positiveArr.push(id);
+          } 
+          if (tagsSplit.indexOf('nodemoready') >= 0) {
+            nodemoreadyArr.push(id);
+          } 
+          if (tagsSplit.indexOf('sanity') >= 0) {
+            sanityArr.push(id);
+          } 
+          if (tagsSplit.indexOf('login') >= 0) {
+            loginArr.push(id);
+          } 
+          if (tagsSplit.indexOf('inactive') >= 0) {
+            inactiveArr.push(id);
+          }
+      } else {
+        spn.innerHTML += "&nbsp;" + items.children[i].displayName;
+      }
+      li.append(spn);
+      buildTestsList(li, JSON.parse(JSON.stringify(items.children[i])));
+      u.append(li);
+      
     }
+  }
 };
 
-class TestTagView extends Backbone.Marionette.View {
-    initialize(tag) {
-        this.tagTemplate = "<div class='text-row'>" +
-        "<span class='include'><input type='checkbox' name='include' class='cbox'></span>" +
-        "<span class='exclude'><input type='checkbox' name='exclude' class='cbox'>" +
-        "</span><span><%=name%></span></div>";
-        this.tag = tag;
-        this.listenTo(this.$el, 'click: .cbox', this.onClickCbox);
-        this.render();
+let search = function (element, matchingTitle) {
+  if (element.displayName == matchingTitle) {
+    return element;
+  } else if (element.children != null) {
+    var i;
+    var result = null;
+    for (i = 0; result == null && i < element.children.length; i++) {
+      result = search(element.children[i], matchingTitle);
     }
+    return result;
+  }
+  return null;
+}
 
-    onClickCbox() {
-        alert('tinclude tag clicked')
-    }
+let buildTagsList = function (parentElement, items) {
+    if (typeof items !== 'undefined') {
+        var u = document.createElement("ul");
+        parentElement.append(u);
+        for (var i = 0; i < items.tags.length; i++) {
+            console.log(items.tags[i])
+            var li = document.createElement('li');
+            li.id = "tags_"+i
+            li.tgName = items.tags[i].name
+            var rowSpan = document.createElement('span')
+            rowSpan.id = "tag_" + i
+            var chk1 = document.createElement('input');
+            var chk2 = document.createElement('input');
+            chk1.type = 'checkbox';
+            chk1.id = "tags_include_" + i;
+            chk2.id = "tags_exclude_"+i;
+            chk2.type = 'checkbox';
+            chk1.className = 'tgBoxInclude';
+            chk2.className = 'tgBoxExclude';
+            rowSpan.innerHTML = items.tags[i].name
 
-    render() {
-        //this.$el.html(this.template(this.tag.toJSON()));
-        let content = TemplateParser(this.tagTemplate, this.tag);
-        this.$el.html(content);
-        return this;
+            //console.log(chk)
+            li.append(chk1);
+            li.append(chk2);
+            li.append(rowSpan);
+            //console.log(li.innerHTML)
+            u.append(li);
+        }
+        console.log(u.innerHTML)
     }
 }
 
-var TestTagViewVar = Backbone.Marionette.View.extend({
-    //template: _.template("<div></div>"),
-    initialize: function() {
-        this.tagTemplate = "<div class='text-row'>" +
-        "<span class='include'><input type='checkbox' name='include' class='cbox'></span>" +
-        "<span class='exclude'><input type='checkbox' name='exclude' class='cbox'>" +
-        "</span><span><%=name%></span></div>";
-//        this.tag = tag;
-//        this.render();
-    },
-    events: {
-      "click .dir": "toggle",
-      "change .floral": "checkbox",
-      "click .btn": "displayOutput",
-      "change .tgBoxInclude": "includetagsToggle",
-      "change .tgBoxExclude": "excludetagsToggle"
-    },
-    includetagsToggle: function(e) {
-        alert('includetagsToggle')
-    },
-    excludetagsToggle: function(e) {
-        alert('excludetagsToggle')
-    },
-    toggle: function (e) {
-        alert('toggle')
-    },
-    displayOutput: function (e) {
-        alert('displayOutput')
-    },
-    checkbox: function (e) {
-        alert('checkbox')
-    },
-
-    render: function (tag) {
-        //this.$el.html(this.template(this.tag.toJSON()));
-        let content = TemplateParser(this.tagTemplate, tag);
-        this.$el.html(content);
-        return this;
-    }
+var TestRunnerTreeModel = Backbone.Model.extend({
+  initialize(models, {
+    url
+  }) {
+    this.url = url;
+  }
 });
 
-class TestTagsView extends Backbone.Marionette.View {
-
-    initialize(tags) {
-        this.title = "Tags";
-        this.tagName = "Tag Name";
-        this.tags = tags;
-        this.tagsTemplate = "<div class='panel'>" +
-            "<div class='title'><h2><%=title%></h2></div>" +
-            "<div class='text-row'>" +
-            "<span class='include'>√</span>" +
-            "<span class='exclude'>x</span>" +
-            "<span><%=tagName%></span>" +
-            "</div><%=tagContent%></div>";
-        this.render();
+allure.api.addTranslation("en", {
+  tab: {
+    tests: {
+      name: "Test Runner"
     }
-
-    render() {
-        var str = "";
-        var tagView = new TestTagViewVar();
-        this.tags.each(function(item){
-            //var tagView = new TestTagView(item.toJSON());
-            //var tagView = new TestTagViewVar();
-            str += tagView.render(item.toJSON()).el.innerHTML;
-        });
-        this.tagContent = str;
-        let content = TemplateParser(this.tagsTemplate, this);
-        this.$el.html(content);
-        return this;
-    }
-}
-
-var TestRunnerView = Backbone.Marionette.View.extend ({
-    className: "grid",
-    initialize: function(model) {
-        this.model = model;
-        this.gridTemplate =
-            "<div class='panel'>" +
-                "<%=execView%>" +
-            "</div>" +
-            "<div class='panel'>" +
-                "<div class='left-col'>" +
-                    "<%=tagsView%>" +
-                "</div>" +
-                "<div class='right-col'>" +
-                    "<%=testsView%>" +
-                "</div>" +
-            "</div>";
-    },
-
-    events: {
-        //'click .execute-button': 'buttonClicked',
-        "submit #test-run-form": "runTests",
-        'click .tree': 'treeClicked',
-        'click .include': 'include',
-        'click .exclude': 'exclude',
-    },
-
-    include: function(e) {
-        let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
-        if (exclude) {
-            e.currentTarget.parentElement.children[1].children[0].checked = false;
-        }
-    },
-
-    exclude: function(e) {
-        let include = e.currentTarget.parentElement.children[1].children[0].checked;
-        if (include) {
-            e.currentTarget.parentElement.children[0].children[0].checked = false;
-        }
-    },
-
-    runTests: function(e) {
-        alert('runner:runTests Clicked')
-    },
-
-    buttonClicked: function(e) {
-        alert('runner:button Clicked')
-    },
-
-    treeClicked: function(e) {
-        alert('runner:tree Clicked')
-    },
-
-    render: function() {
-        this.tagsView = new TestTagsView(this.model.tags).el.innerHTML;
-        this.execView = new TestExecutorView(this.model.executor).el.innerHTML;
-        this.testsView = new TestTestsView(this.model).el.innerHTML;
-        let gridView = TemplateParser(this.gridTemplate, this)
-        this.$el.html(gridView);
-        return this;
-    }
+  }
 });
 
-var TestExecutorView = Backbone.Marionette.View.extend({
-    //tagName: "form",
-    //id: "test-run-form",
-    //className: "run-form",
-    initialize: function(exec) {
-        this.title = 'Test Executor';
-        this.onceHostLabel = 'OENC host';
-        this.testCountLabel = 'Total number of selected Tests cases';
-        this.cleanLabel = 'Clean existing reports before generating a new one';
-        this.testCount = 100;
-        this.runButtonCaption = 'Run Tests';
-        this.exec = new TestExecutor(exec);
-        this.execTemplate =
-            "<form id='test-run-form' class='run-form'><div class='row test-executor'>" +
-            "<div class='title'><h2><%=title%></h2></div>" +
-            "<div class='panel'><label class='text-row host' for='host_text'><%=onceHostLabel%></label>" +
-            "<input class='host-input' type='text' name='' id='host_text' value=''/></div>" +
-            "<div class='panel'><label class='text-row text-label' for='id_clean'><%=cleanLabel%></label>" +
-            "<input type='checkbox' name='clean' id='id_clean' class='clbox'></div>" +
-            "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label><%=testCount%></label></div>" +
-            "<div class='panel'><span class='text-row'><button class='execute-button' id='run'><%=runButtonCaption%></button></span></div>" +
-            "</div></form>";
-        this.render();
-    },
+var TestRunnerTreeView = Backbone.Marionette.View.extend({
+  //template: template,
 
-    render: function() {
-        //this.$el.html(this.template(this.tag.toJSON()));
-        let execContent = TemplateParser(this.execTemplate, this)
-        this.$el.html(execContent);
-        //let dom = DOMTemplateParser(execContent);
-        //this.$el.add(dom);
-        return this;
+  events: {
+    "click .dir": "toggle",
+    "change .floral": "checkbox",
+    "click .btn": "displayOutput",
+    "change .tgBoxInclude": "includetagsToggle",
+    "change .tgBoxExclude": "excludetagsToggle"
+  },
+
+  includetagsToggle: function(e) {
+    //console.log(this.$(e.currentTarget).prop('checked'));
+    var tagName = e.currentTarget.parentElement.tgName
+    var idsToCheck = [];
+    if (tagName == 'login') {
+      idsToCheck = loginArr
     }
-});
-
-class TestNodeView extends Backbone.Marionette.View {
-    initialize() {
-        this.leaf = new TestLeafView();
-        this.testsTemplate =
-        "<li class='dir tree_leaf'>" +
-            "<input type='checkbox' class='cbox'>" +
-            "<%=displayName%>" +
-            "<ul class='tree_node'>" +
-                "<%=node%>" +
-            "</ul>" +
-        "</li>";
+    if (tagName == 'demoready') {
+      idsToCheck = demoreadyArr
     }
-
-    render(test) {
-        var content = "";
-        if (test.type === "testcase") {
-            content += this.leaf.render(test).el.innerHTML;
+    if (tagName == 'negative') {
+      idsToCheck = negArr
+    }
+    if (tagName == 'positive') {
+      idsToCheck = positiveArr
+    }
+    if (tagName == 'nodemoready') {
+      idsToCheck = nodemoreadyArr
+    }
+    if (tagName == 'sanity') {
+      idsToCheck = sanityArr
+    }
+    if (tagName == 'inactive') {
+      idsToCheck = inactiveArr
+    }
+    for(var i = 0; i < idsToCheck.length; i ++) {
+        //console.log(this.$("#"+idsToCheck[i]).prop('checked'));
+        if (this.$(e.currentTarget).prop('checked') == true) {
+          if (this.$("#"+idsToCheck[i]).prop('checked') == false){
+            this.$("#"+idsToCheck[i]).prop("checked", true);
+          }
         } else {
-            if (test.children) {
-                var children = "";
-                for(var i in test.children) {
-                    children += this.render(test.children[i]).el.innerHTML;
-                }
-            }
-            content += TemplateParser(this.testsTemplate, {displayName:test.displayName, node:children})
-        }
-        this.$el.html(content);
-        //let dom = DOMTemplateParser(content);
-        //this.$el.add(dom);
-        return this;
-    }
-
-}
-
-class TestLeafView extends Backbone.Marionette.View {
-    initialize() {
-        //this.template = this._.template("<div class='abcd'></div>");
-        this.testsTemplate = "<li class='dir tree_leaf'>" +
-            "<input type='checkbox' class='cbox'>" +
-            "<%=displayName%>" +
-            "</li>"
-    }
-    render(test) {
-        let content = TemplateParser(this.testsTemplate, test)
-        this.$el.html(content);
-        //let dom = DOMTemplateParser(content);
-        //this.$el.add(dom);
-        return this;
-    }
-}
-
-class TestTestsView extends Backbone.Marionette.View {
-    initialize(model) {
-        this.node = new TestNodeView();
-        this.leaf = new TestLeafView();
-        this.title = 'Available Tests';
-        this.tests = model.tests;
-        this.allTests = model.allTests;
-        this.testsTemplate =
-            "<div class='panel'>" +
-            "<div class='title'><h2><%=title%></h2></div>" +
-            "<div class='tree'><ul class='tree_node'><%=content%></ul></div></div>";
-        this.render()
-    }
-
-    renderFlat() {
-        this.content = "";
-        let newNode = true;
-        let firstNode = true;
-        for (var i in this.allTests) {
-            if (this.allTests[i].type === "testcase") {
-                if (newNode) {
-                    this.content += "<ul class='tree_node'>";
-                    newNode = false;
-                }
-                this.content += this.leaf.render(this.allTests[i]).el.innerHTML
-                firstNode = false;
-            } else {
-                if (!firstNode) {
-                    this.content += "</ul>";
-                }
-                this.content += "<ul class='tree_node'>";
-                if (!newNode) {
-                    this.content += "</ul>";
-                }
-                newNode = true;
-                this.content += this.leaf.render(this.allTests[i]).el.innerHTML
-            }
-        }
-        let execContent = TemplateParser(this.testsTemplate, this)
-        this.$el.html(execContent);
-        //let dom = DOMTemplateParser(execContent);
-        //this.$el.add(dom);
-        return this;
-
-    }
-
-    renderTree() {
-        this.content = this.node.render(this.tests).el.innerHTML;
-        let execContent = TemplateParser(this.testsTemplate, this)
-        //let dom = DOMTemplateParser(execContent);
-        //this.$el.add(dom);//DOMTemplateParser
-        this.$el.html(execContent);
-        return this;
-    }
-
-    render() {
-        //return this.renderFlat();
-        return this.renderTree();
-    }
-}
-
-
-class TestExecutor extends Backbone.Model {
-    initialize(executor) {
-        this.oenchost = executor.oenchost;
-
-    }
-};
-
-
-class AvailableTest extends Backbone.Model {
-    initialize({item, id}) {
-        this.displayName = item['displayName'];
-        this.id = id + "." + this.displayName;
-        this.state = "";
-        this.type = item['type'];
-        this.tags = item['tags'];
-        if (item['className']) {
-            this.className = item['className']
-        };
-        if (item['methodName']) {
-            this.methodName = item['methodName']
-        };
-    }
-}
-
-class TestRunnerModel extends Backbone.Model {
-    initialize(models, {url}) {
-        this.url = url;
-    }
-    /*
-    getFlattenTestResults(item, list, id) {
-        var newTest = new AvailableTest({item:item, id:id});
-        list.push(newTest);
-
-        if (item.children) {
-            var i;
-            for (i in item.children) {
-                this.getFlattenTestResults(item.children[i], list, newTest['id']);
-            }
+          this.$("#"+idsToCheck[i]).prop("checked", false);
         }
     }
-*/
-    parse(data) {
-        this.tests = data["tests"];
-        //this.allTests = []
-        //this.getFlattenTestResults(this.tests, this.allTests, "root");
-        this.tags = new TestTags(data["tags"]);
-        this.executor = new TestExecutor(data["executor"]);
-    }
+  },
 
-}
-
-
-class TestRunnerLayout extends allure.components.AppLayout {
-    initialize({url}) {
-        super.initialize();
-        this.model = new TestRunnerModel([], {url});
+  excludetagsToggle: function(e) {
+    //console.log(this.$(e.currentTarget).prop('checked'));
+    var tagName = e.currentTarget.parentElement.tgName
+    var idsToCheck = [];
+    if (tagName == 'login') {
+      idsToCheck = loginArr
     }
-
-
-    loadData() {
-        return this.model.fetch();
+    if (tagName == 'demoready') {
+      idsToCheck = demoreadyArr
     }
-
-    getContentView() {
-        return new TestRunnerView(this.model)
+    if (tagName == 'negative') {
+      idsToCheck = negArr
     }
-    onViewReady() {
-        const {
-            url
-        } = this.options;
-        this.onRouteUpdate(url);
+    if (tagName == 'positive') {
+      idsToCheck = positiveArr
     }
-    onRouteUpdate(url) {
-
+    if (tagName == 'nodemoready') {
+      idsToCheck = nodemoreadyArr
     }
-}
-var DOMTemplateParser = function(html) {
-    return new DOMParser().parseFromString(html, "text/html");
-}
-var TemplateParser = function(template, model) {
-    let response = "";
-    let n = 0;
-    let m = template.indexOf("<%=", n);
-    while ((m = template.indexOf("<%=", n)) >= 0) {
-        response += template.substring(n, m);
-        n = m + 3;
-        m = template.indexOf("%>", n);
-        //if (m < n) { console.error("invalid template at position " + n);}
-        let key = template.substring(n, m);
-        response += model[key];
-        n = m + 2;
+    if (tagName == 'sanity') {
+      idsToCheck = sanityArr
     }
-    if (n > 0 && n < template.length) {
-        response += template.substring(n)
+    if (tagName == 'inactive') {
+      idsToCheck = inactiveArr
     }
-    return response;
-}
-
-allure.api.addTranslation('en', {
-    tab: {
-        tests: {
-            name: 'Test Runner'
+    for(var i = 0; i < idsToCheck.length; i ++) {
+        //console.log(this.$("#"+idsToCheck[i]).prop('checked'));
+        if (this.$(e.currentTarget).prop('checked') == true) {
+          if (this.$("#"+idsToCheck[i]).prop('checked') == true){
+            this.$("#"+idsToCheck[i]).prop("checked", false);
+          }
         }
+      }
+  },
+
+  //$("#checkbox").prop("checked", true);
+
+  // Uncheck
+  //$("#checkbox").prop("checked", false);
+  toggle: function (e) {
+    e.stopPropagation();
+    this.$(e.currentTarget.parentElement)
+      .children("ul")
+      .slideToggle();
+  },
+
+  displayOutput: function () {
+    console.log(this.options.attributes);
+  },
+
+  checkbox: function (e) {
+    this.$(e.target)
+      .next().next("ul")
+      .find("input:checkbox")
+      .prop("checked", this.$(e.target).prop("checked"));
+
+    for (var i = this.$(e.target).next().next("ul").length - 1; i >= 0; i--) {
+      var targ = this.$(e.target).next().next("ul:eq(" + i + ")").find("input:checkbox");
+      search(this.options.get('tests'), targ[0].value).state = e.target.checked;
     }
+
+    for (var i = this.$(e.currentTarget).find("ul").length - 1; i >= 0; i--) {
+      var tar = this.$(e.currentTarget).find("ul:eq(" + i + ")").prev().prev("input:checkbox");
+      this.$(e.currentTarget).find("ul:eq(" + i + ")")
+        .prev().prev("input:checkbox")
+        .prop("checked", function () {
+          return tar.next().next("ul").find("input:checkbox:not(:checked)").length ===
+            0 ?
+            true :
+            false;
+        });
+    }
+    search(this.options.get('tests'), e.target.value).state = e.target.checked;
+    // console.log()
+    // let target = this.options.attributes.tests.children.filter(x => {
+    //   if (x.)
+    // })
+    // console.log(this.options.attributes)
+  },
+
+  render: function () {
+    let js = JSON.parse(JSON.stringify(this.options));
+
+    // this.$el.style.display = "flex";
+
+    var output = document.createElement("button");
+    output.className = "btn";
+    output.innerHTML += "RunTests";
+    output.style.marginTop = "3rem";
+    var main = document.createElement("div");
+    this.$el.append(output);
+    main.style.display = "flex";
+    this.$el.append(main);
+    var tags = document.createElement("div");
+    main.append(tags);
+    tags.style.border = "1px solid";
+    tags.style.margin = ".5rem";
+    tags.style.padding = "1rem";
+    tags.style.width = "33%";
+    var tagsHeading = document.createElement("h3");
+    tagsHeading.innerHTML += "Available Tags";
+    tags.append(tagsHeading);
+    var tagsDiv = document.createElement("div");
+    tags.append(tagsDiv);
+    var tests = document.createElement("div");
+    tests.style.border = "1px solid";
+    tests.style.margin = ".5rem";
+    tests.style.padding = "1rem";
+    tests.style.width = "67%";
+    main.append(tests);
+    var testHeading = document.createElement("h3");
+    testHeading.innerHTML += " Tests";
+    tests.append(testHeading);
+    var testsDiv = document.createElement("div");
+    testsDiv.className = "floral";
+    testsDiv.style.overflow = "scroll";
+    testsDiv.style.height = "90vh";
+    tests.append(testsDiv);
+
+    buildTagsList(tagsDiv, js);
+    buildTestsList(testsDiv, js.tests);
+    // console.log(demoreadyArr);
+    // console.log(nodemoreadyArr);
+    // console.log(negArr);
+    // console.log(loginArr);
+    // console.log(sanityArr);
+    // console.log(positiveArr);
+    // console.log(inactiveArr);
+    return this;
+  }
 });
 
-allure.api.addTab('tests', {
-    title: 'tab.tests.name', icon: 'fa fa-list',
-    route: 'tests',
-    onEnter: (function () {
-        return new TestRunnerLayout({
-            url: 'data/testDiscovery.json'
-        });
-    })
+class TestRunnerTreeLayout extends allure.components.AppLayout {
+  initialize({
+    url
+  }) {
+    //alert('layout:init')
+    super.initialize();
+    this.tree = new TestRunnerTreeModel([], {
+      url
+    });
+  }
+
+  loadData() {
+    //alert('layout:load')
+    return this.tree.fetch();
+  }
+
+  getContentView() {
+    //alert('layout:content')
+    return new TestRunnerTreeView(this.tree);
+  }
+
+  onViewReady() {
+    const {
+      url
+    } = this.options;
+    this.onRouteUpdate(url);
+  }
+  onRouteUpdate(url) {}
+}
+/////////
+
+ ////<li methodname = '<%- item.method %>' tag_names = '<%- item.tags %>' ><%- item.name %></li>
+        // var methodsView = Backbone.View.extend({
+        //   template: _.template(`
+        //                       <ul>
+        //                         <% _.each(items, function(item) { %>
+        //                           <li><%- item.name %></li>
+        //                         <% }) %>
+        //                       </ul>
+        //                       `)
+
+        // });
+        // for (var i = 0; i < items.children.length; i++) {
+        //     //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //     if (typeof items.children[i].tags !== 'undefined') {
+        //         //console.log(items.children[i].displayName + ' --- ' + items.children[i].tags );
+        //     } else {
+        //         //console.log(items.children[i].displayName);
+        //     }
+        //     var items2 = items.children[i]
+        //     for (var j = 0; j < items2.children.length; j++) {
+        //         //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //         if (typeof items2.children[j].tags !== 'undefined') {
+        //             //console.log(items2.children[j].displayName + ' --- ' + items2.children[j].tags );
+        //         } else {
+        //             //console.log(items2.children[j].displayName);
+        //         }
+        //         var items3 = items2.children[j]
+        //         var methodsCollection = Backbone.Collection.extend({});
+        //         var methodsCol = new methodsCollection();
+        //         for (var k = 0; k < items3.children.length; k++) {
+        //           //console.log(items.children[i].displayName + "-----" + tems.children[i].tags);
+        //           if (typeof items3.children[k].tags !== 'undefined') {
+        //               //console.log(items3.children[k].displayName + ' --- ' + items3.children[k].tags );
+        //               //var method = new methodMdl({method :items3.children[k], name : items3.children[k].displayName, tags: items3.children[k].tags})
+        //               var method = {method :items3.children[k], name : items3.children[k].displayName, tags: items3.children[k].tags}
+        //               methodsCol.add(method);
+        //           } else {
+        //               //console.log(items3.children[k].displayName);
+        //           }
+        //         }
+        //         console.log(methodsCol);
+        //         var methodsV = new methodsView({collection:methodsCol});
+        //         methodsV.render();
+        //         console.log(methodsV.el);
+        //         break;
+        //     }
+        // }
+
+        //return this;
+    
+
+allure.api.addTab("tests", {
+  title: "tab.tests.name",
+  icon: "fa fa-list",
+  route: "tests",
+  onEnter: function () {
+    //alert('addtab')
+    return new TestRunnerTreeLayout({
+       url: 'data/plugindata.json'
+    });
+  }
 });
