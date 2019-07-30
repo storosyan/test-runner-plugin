@@ -97,6 +97,8 @@ class TestTagsView extends Backbone.Marionette.View {
     return this;
   }
 }
+var excludeArr = [];
+var includeArr = [];
 
 var TestRunnerView = Backbone.Marionette.View.extend({
   className: "grid",
@@ -125,18 +127,83 @@ var TestRunnerView = Backbone.Marionette.View.extend({
     "click .exclude": "exclude"
   },
 
+  selectTag: function(e) {
+      let chkStatus = e.currentTarget.children[0].checked
+      let selectedInclude = e.currentTarget.parentElement.children[2].innerText.trim();
+      alert(selectedInclude)
+      if (chkStatus) {
+        includeArr.push(selectedInclude);
+        if (excludeArr.indexOf(selectedInclude) >= 0) {
+          for(var i = 0; i < excludeArr.length; i++){
+              if ( excludeArr[i] === selectedInclude) {
+               excludeArr.splice(i, 1);
+              }
+          }
+        }
+        //console.log(excludeArr)
+      } else {
+        for(var i = 0; i < includeArr.length; i++){
+            if ( includeArr[i] === selectedInclude) {
+             includeArr.splice(i, 1);
+            }
+        }
+
+      }
+      let allTestTags = this.el.getElementsByClassName("tags")
+      //console.log(allTestTags.length)
+      for (let i = 0; i < allTestTags.length; i ++){
+        //console.log(allTestTags[i].innerText.trim())
+        let tmTag = allTestTags[i].innerText.trim()
+        tmTag = tmTag.substring(1, tmTag.length-1)
+        let mthdTags = tmTag.split(',');
+        let intersected = mthdTags.filter(value => excludeArr.includes(value));
+        //console.log(includeArr);
+        if (mthdTags.indexOf(selectedInclude) >=0 ) {
+            //console.log(excludeArr.indexOf(selectedInclude))
+            if (chkStatus && intersected.length < 1) {
+              allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
+              //allTestTags[i].parentElement.children[0].checked = true;
+              totalSelectedCounts += 1;
+            } else if (chkStatus === false && intersected.length < 1) {
+              allTestTags[i].parentElement.setAttribute("style", "background-color: none;")
+              //allTestTags[i].parentElement.children[0].checked = false;
+              if (totalSelectedCounts <= 1){
+                totalSelectedCounts = 0;
+              } else {
+                totalSelectedCounts += -1;
+              }
+            }
+        }
+      }
+      //console.log(this.el.getElementsByClassName("selectedTestsCount")[0].innerText)
+      this.el.getElementsByClassName("selectedTestsCount")[0].innerText = totalSelectedCounts;
+  },
+
+  setTagState: function({tagName:name, state: state}) {
+      this.model.tags.each(function(item) {
+          if (item.get('name') === name) {
+              item.set('state', state);
+          }
+      });
+  },
+
   include: function(e) {
-    let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
-    if (exclude) {
-      e.currentTarget.parentElement.children[1].children[0].checked = false;
-    }
+      //alert(e.currentTarget)
+      let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
+      if (exclude) {
+          e.currentTarget.parentElement.children[1].children[0].checked = false;
+          e.currentTarget.children[0].checked = true;
+      };
+      this.setTagState({tagName: e.currentTarget.parentElement.children[2].innerText.trim(), state: "include"})
   },
 
   exclude: function(e) {
-    let include = e.currentTarget.parentElement.children[1].children[0].checked;
-    if (include) {
-      e.currentTarget.parentElement.children[0].children[0].checked = false;
-    }
+      let include = e.currentTarget.parentElement.children[1].children[0].checked;
+      if (include) {
+          e.currentTarget.parentElement.children[0].children[0].checked = false;
+          e.currentTarget.children[0].checked = true;
+      };
+      this.setTagState({tagName: e.currentTarget.parentElement.children[2].innerText.trim(), state: "exclude"})
   },
 
   runTests: function(e) {
@@ -182,11 +249,11 @@ var TestRunnerView = Backbone.Marionette.View.extend({
 
   checked: function(e) {
     this.$(e.target)
-      .next("ul")
-      .find("input:checkbox")
-      .prop("checked", this.$(e.target).prop("checked"));
+        .next("ul")
+        .find("input:checkbox")
+        .prop("checked", this.$(e.target).prop("checked"));
     this.search(this.options.tests, e.target.nextSibling.data).state =
-      e.target.checked;
+        e.target.checked;
     for (
       var i =
         this.$(e.target)
@@ -269,13 +336,15 @@ class TestNodeView extends Backbone.Marionette.View {
   initialize() {
     this.leaf = new TestLeafView();
     this.testsTemplate =
-      "<li class='dir tree_leaf'>" +
-      "<input type='checkbox' class='cbox'>" +
-      "<%=displayName%>" +
-      "<ul class='tree_node'>" +
-      "<%=node%>" +
-      "</ul>" +
-      "</li>";
+        "<ul class='tree_node'>" +
+            "<li class='dir tree_leaf eachElem'>" +
+                "<input type='checkbox' class='cbox'>" +
+                    "<%=displayName%>" +
+                "<ul class='tree_node'>" +
+                    "<%=node%>" +
+                "</ul>" +
+            "</li>" +
+        "</ul>";
   }
 
   render(test) {
@@ -302,21 +371,20 @@ class TestNodeView extends Backbone.Marionette.View {
 }
 
 class TestLeafView extends Backbone.Marionette.View {
-  initialize() {
+    initialize() {
     //this.template = this._.template("<div class='abcd'></div>");
     this.testsTemplate =
-      "<li class='dir tree_leaf'>" +
-      "<input type='checkbox' class='cbox'>" +
-      "<%=displayName%>" +
-      "</li>";
-  }
-  render(test) {
-    let content = TemplateParser(this.testsTemplate, test);
-    this.$el.html(content);
-    //let dom = DOMTemplateParser(content);
-    //this.$el.add(dom);
-    return this;
-  }
+        "<li class='dir tree_leaf eachElem'>" + // tags=<%=alltags%>
+            "<input type='checkbox' class='cbox'>" +
+                "<span><%=displayName%></span>" +
+                "<span class='tags label label-info'>[<%=tags%>]</span>" +
+        "</li>";
+    }
+    render(test) {
+        let content = TemplateParser(this.testsTemplate, test);
+        this.$el.html(content);
+        return this;
+    }
 }
 
 class TestTestsView extends Backbone.Marionette.View {
@@ -325,57 +393,20 @@ class TestTestsView extends Backbone.Marionette.View {
     this.leaf = new TestLeafView();
     this.title = "Available Tests";
     this.tests = model.tests;
-    this.allTests = model.allTests;
+    //this.allTests = model.allTests;
     this.testsTemplate =
       "<div class='panel'>" +
       "<div class='title'><h2><%=title%></h2></div>" +
-      "<div class='tree'><ul class='tree_node'><%=content%></ul></div></div>";
+      "<div class='tree'><%=content%></div></div>";
+      //"<div class='tree'><ul class='tree_node'><%=content%></ul></div></div>";
     this.render();
   }
 
-  renderFlat() {
-    this.content = "";
-    let newNode = true;
-    let firstNode = true;
-    for (var i in this.allTests) {
-      if (this.allTests[i].type === "testcase") {
-        if (newNode) {
-          this.content += "<ul class='tree_node'>";
-          newNode = false;
-        }
-        this.content += this.leaf.render(this.allTests[i]).el.innerHTML;
-        firstNode = false;
-      } else {
-        if (!firstNode) {
-          this.content += "</ul>";
-        }
-        this.content += "<ul class='tree_node'>";
-        if (!newNode) {
-          this.content += "</ul>";
-        }
-        newNode = true;
-        this.content += this.leaf.render(this.allTests[i]).el.innerHTML;
-      }
-    }
-    let execContent = TemplateParser(this.testsTemplate, this);
-    this.$el.html(execContent);
-    //let dom = DOMTemplateParser(execContent);
-    //this.$el.add(dom);
-    return this;
-  }
-
-  renderTree() {
-    this.content = this.node.render(this.tests).el.innerHTML;
-    let execContent = TemplateParser(this.testsTemplate, this);
-    //let dom = DOMTemplateParser(execContent);
-    //this.$el.add(dom);//DOMTemplateParser
-    this.$el.html(execContent);
-    return this;
-  }
-
   render() {
-    //return this.renderFlat();
-    return this.renderTree();
+      this.content = this.node.render(this.tests).el.innerHTML;
+      let execContent = TemplateParser(this.testsTemplate, this);
+      this.$el.html(execContent);
+      return this;
   }
 }
 
@@ -402,29 +433,14 @@ class AvailableTest extends Backbone.Model {
 }
 
 class TestRunnerModel extends Backbone.Model {
-  initialize(models, { url }) {
-    this.url = url;
-  }
-  /*
-    getFlattenTestResults(item, list, id) {
-        var newTest = new AvailableTest({item:item, id:id});
-        list.push(newTest);
-
-        if (item.children) {
-            var i;
-            for (i in item.children) {
-                this.getFlattenTestResults(item.children[i], list, newTest['id']);
-            }
-        }
+    initialize(models, { url }) {
+        this.url = url;
     }
-*/
-  parse(data) {
-    this.tests = data["tests"];
-    //this.allTests = []
-    //this.getFlattenTestResults(this.tests, this.allTests, "root");
-    this.tags = new TestTags(data["tags"]);
-    this.executor = new TestExecutor(data["executor"]);
-  }
+    parse(data) {
+        this.tests = data["tests"];
+        this.tags = new TestTags(data["tags"]);
+        this.executor = new TestExecutor(data["executor"]);
+    }
 }
 
 class TestRunnerLayout extends allure.components.AppLayout {
