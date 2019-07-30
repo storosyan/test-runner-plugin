@@ -148,3 +148,11 @@
     cursor: pointer;
     padding: 3px;
 }
+.eachElem:hover { 
+  background-color: #CEE1FA;
+}
+
+.test-executor .panel .execute-button:hover {
+    border-color: #888;
+}
+

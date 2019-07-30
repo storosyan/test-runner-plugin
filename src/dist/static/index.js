@@ -100,7 +100,8 @@ class TestTagsView extends Backbone.Marionette.View {
         return this;
     }
 }
-
+var excludeArr = [];
+var includeArr = [];
 var TestRunnerView = Backbone.Marionette.View.extend ({
     className: "grid",
     initialize: function(model) {
@@ -124,14 +125,65 @@ var TestRunnerView = Backbone.Marionette.View.extend ({
         "submit #test-run-form": "runTests",
         'click .tree': 'treeClicked',
         'click .include': 'include',
-        'click .exclude': 'exclude',
+        'click .exclude': 'exclude'
+        
     },
 
     include: function(e) {
         let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
+        console.log(exclude)
         if (exclude) {
             e.currentTarget.parentElement.children[1].children[0].checked = false;
         }
+        let chkStatus = e.currentTarget.children[0].checked
+        console.log(chkStatus)
+        let selectedInclude = e.currentTarget.parentElement.children[2].innerText.trim();
+        if (chkStatus) {
+          includeArr.push(selectedInclude);
+          if (excludeArr.indexOf(selectedInclude) >= 0) {
+            for(var i = 0; i < excludeArr.length; i++){ 
+                if ( excludeArr[i] === selectedInclude) {
+                 excludeArr.splice(i, 1); 
+                }
+            }
+          }
+          //console.log(excludeArr)
+        } else {
+          for(var i = 0; i < includeArr.length; i++){ 
+              if ( includeArr[i] === selectedInclude) {
+               includeArr.splice(i, 1); 
+              }
+          }
+          
+        }
+        let allTestTags = this.el.getElementsByClassName("tags")
+        //console.log(allTestTags.length)
+        for (let i = 0; i < allTestTags.length; i ++){
+          //console.log(allTestTags[i].innerText.trim())
+          let tmTag = allTestTags[i].innerText.trim()
+          tmTag = tmTag.substring(1, tmTag.length-1)
+          let mthdTags = tmTag.split(',');
+          let intersected = mthdTags.filter(value => excludeArr.includes(value));
+          //console.log(includeArr);
+          if (mthdTags.indexOf(selectedInclude) >=0 ) {
+              //console.log(excludeArr.indexOf(selectedInclude))
+              if (chkStatus && intersected.length < 1) {
+                allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
+                //allTestTags[i].parentElement.children[0].checked = true;
+                totalSelectedCounts += 1;
+              } else if (chkStatus === false && intersected.length < 1) {
+                allTestTags[i].parentElement.setAttribute("style", "background-color: none;")
+                //allTestTags[i].parentElement.children[0].checked = false;
+                if (totalSelectedCounts <= 1){
+                  totalSelectedCounts = 0;
+                } else {
+                  totalSelectedCounts += -1;
+                }
+              }
+          }
+        }
+        //console.log(this.el.getElementsByClassName("selectedTestsCount")[0].innerText)
+        this.el.getElementsByClassName("selectedTestsCount")[0].innerText = totalSelectedCounts;
     },
 
     exclude: function(e) {
@@ -139,6 +191,63 @@ var TestRunnerView = Backbone.Marionette.View.extend ({
         if (include) {
             e.currentTarget.parentElement.children[0].children[0].checked = false;
         }
+        let chkStatus = e.currentTarget.children[0].checked
+        let selectedExclude = e.currentTarget.parentElement.children[2].innerText.trim();
+        if (chkStatus) {
+          excludeArr.push(selectedExclude);
+          if (includeArr.indexOf(selectedExclude) >= 0) {
+            for(var i = 0; i < includeArr.length; i++){ 
+                if ( includeArr[i] === selectedExclude) {
+                 includeArr.splice(i, 1); 
+                }
+            }
+          }
+          //console.log(excludeArr)
+        } else {
+          for(var i = 0; i < excludeArr.length; i++){ 
+              if ( excludeArr[i] === selectedExclude) {
+               excludeArr.splice(i, 1); 
+              }
+          }
+          //console.log(excludeArr)
+        }
+        let allTestTags = this.el.getElementsByClassName("tags")
+        //console.log(this.model.tests.children[0].children[0].children[0].tags)
+        for (let i = 0; i < allTestTags.length; i ++) {
+          //console.log(allTestTags[i].innerText.trim())
+          let tmTag = allTestTags[i].innerText.trim()
+          tmTag = tmTag.substring(1, tmTag.length-1)
+          let mthdTags = tmTag.split(',');
+          let intersectedIn = mthdTags.filter(value => includeArr.includes(value));
+          let intersectedEx = mthdTags.filter(value => excludeArr.includes(value));
+          if (mthdTags.indexOf(selectedExclude) >=0 ) {
+              if (chkStatus) {
+                allTestTags[i].parentElement.setAttribute("style", "background-color: red;")
+                if (intersectedIn.length > 0 && intersectedEx.length > 0) {
+                  if (totalSelectedCounts <= 1){
+                    totalSelectedCounts = 0;
+                  } else {
+                    totalSelectedCounts += -1;
+                  }
+                } else if (includeArr.length === 0 && excludeArr.length > 0) {
+                  totalSelectedCounts = 0;
+                } 
+              } else if(chkStatus === false && intersectedIn.length > 0 ){
+                allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
+                totalSelectedCounts += +1;
+              } else {
+                allTestTags[i].parentElement.setAttribute("style", "background-color: none;")
+                if (intersectedIn.length >= 0 && intersectedEx.length > 0) {
+                  if (totalSelectedCounts <= 1){
+                    totalSelectedCounts = 0;
+                  } else {
+                    totalSelectedCounts += -1;
+                  }
+                } 
+              }
+          }
+        }
+        this.el.getElementsByClassName("selectedTestsCount")[0].innerText = totalSelectedCounts;
     },
 
     runTests: function(e) {
@@ -162,7 +271,7 @@ var TestRunnerView = Backbone.Marionette.View.extend ({
         return this;
     }
 });
-
+let totalSelectedCounts = 0;
 var TestExecutorView = Backbone.Marionette.View.extend({
     //tagName: "form",
     //id: "test-run-form",
@@ -170,9 +279,9 @@ var TestExecutorView = Backbone.Marionette.View.extend({
     initialize: function(exec) {
         this.title = 'Test Executor';
         this.onceHostLabel = 'OENC host';
-        this.testCountLabel = 'Total number of selected Tests cases';
+        this.testCountLabel = 'Total number of selected Tests cases: ';
         this.cleanLabel = 'Clean existing reports before generating a new one';
-        this.testCount = 100;
+        this.testCount = totalSelectedCounts;
         this.runButtonCaption = 'Run Tests';
         this.exec = new TestExecutor(exec);
         this.execTemplate =
@@ -182,7 +291,7 @@ var TestExecutorView = Backbone.Marionette.View.extend({
             "<input class='host-input' type='text' name='' id='host_text' value=''/></div>" +
             "<div class='panel'><label class='text-row text-label' for='id_clean'><%=cleanLabel%></label>" +
             "<input type='checkbox' name='clean' id='id_clean' class='clbox'></div>" +
-            "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label><%=testCount%></label></div>" +
+            "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label class = 'selectedTestsCount'><%=testCount%></label></div>" +
             "<div class='panel'><span class='text-row'><button class='execute-button' id='run'><%=runButtonCaption%></button></span></div>" +
             "</div></form>";
         this.render();
@@ -191,10 +300,15 @@ var TestExecutorView = Backbone.Marionette.View.extend({
     render: function() {
         //this.$el.html(this.template(this.tag.toJSON()));
         let execContent = TemplateParser(this.execTemplate, this)
+        this.testCount = totalSelectedCounts;
         this.$el.html(execContent);
         //let dom = DOMTemplateParser(execContent);
         //this.$el.add(dom);
         return this;
+    },
+
+    onRender: function() {
+      
     }
 });
 
@@ -203,8 +317,10 @@ class TestNodeView extends Backbone.Marionette.View {
         this.leaf = new TestLeafView();
         this.testsTemplate =
         "<li class='dir tree_leaf'>" +
+            "<div class='eachElem'>" +
             "<input type='checkbox' class='cbox'>" +
             "<%=displayName%>" +
+            "</div>"+
             "<ul class='tree_node'>" +
                 "<%=node%>" +
             "</ul>" +
@@ -235,9 +351,12 @@ class TestNodeView extends Backbone.Marionette.View {
 class TestLeafView extends Backbone.Marionette.View {
     initialize() {
         //this.template = this._.template("<div class='abcd'></div>");
-        this.testsTemplate = "<li class='dir tree_leaf'>" +
+        this.testsTemplate = "<li class='dir tree_leaf' tags=<%=alltags%>>" +
+            "<div class='eachElem'>" +
             "<input type='checkbox' class='cbox'>" +
-            "<%=displayName%>" +
+            "<span><%=displayName%></span>" +
+            "<span class='tags'> &nbsp [<%=tags%>]</span>" +
+            "</div>" +
             "</li>"
     }
     render(test) {
@@ -248,6 +367,7 @@ class TestLeafView extends Backbone.Marionette.View {
         return this;
     }
 }
+
 
 class TestTestsView extends Backbone.Marionette.View {
     initialize(model) {
@@ -381,10 +501,11 @@ class TestRunnerLayout extends allure.components.AppLayout {
         const {
             url
         } = this.options;
+        totalSelectedCounts = 0;
         this.onRouteUpdate(url);
     }
     onRouteUpdate(url) {
-
+      totalSelectedCounts = 0;
     }
 }
 var DOMTemplateParser = function(html) {
@@ -399,6 +520,7 @@ var TemplateParser = function(template, model) {
         n = m + 3;
         m = template.indexOf("%>", n);
         //if (m < n) { console.error("invalid template at position " + n);}
+
         let key = template.substring(n, m);
         response += model[key];
         n = m + 2;
@@ -422,7 +544,7 @@ allure.api.addTab('tests', {
     route: 'tests',
     onEnter: (function () {
         return new TestRunnerLayout({
-            url: 'data/testDiscovery.json'
+           url: 'data/plugindata.json'
         });
     })
 });
