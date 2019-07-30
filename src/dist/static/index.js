@@ -99,6 +99,7 @@ class TestTagsView extends Backbone.Marionette.View {
 }
 var excludeArr = [];
 var includeArr = [];
+let totalSelectedCounts = 0;
 
 var TestRunnerView = Backbone.Marionette.View.extend({
   className: "grid",
@@ -127,7 +128,7 @@ var TestRunnerView = Backbone.Marionette.View.extend({
     "click .exclude": "exclude"
   },
 
-  selectTag: function(e) {
+  selectTag: function(e, includeArr, excludeArr) {
       let chkStatus = e.currentTarget.children[0].checked
       let selectedInclude = e.currentTarget.parentElement.children[2].innerText.trim();
       alert(selectedInclude)
@@ -187,23 +188,109 @@ var TestRunnerView = Backbone.Marionette.View.extend({
       });
   },
 
-  include: function(e) {
-      //alert(e.currentTarget)
-      let exclude = e.currentTarget.parentElement.children[1].children[0].checked;
-      if (exclude) {
-          e.currentTarget.parentElement.children[1].children[0].checked = false;
-          e.currentTarget.children[0].checked = true;
+  switchTagState: function(clicked, pair) {
+      if (pair.checked) {
+          pair.checked = false;
+          clicked.checked = true;
       };
-      this.setTagState({tagName: e.currentTarget.parentElement.children[2].innerText.trim(), state: "include"})
+  },
+
+    highlightTest: function(chkStatus, selectedBox, ar1, ar2, flag) {
+        if (chkStatus) {
+            ar1.push(selectedBox);
+            if (ar2.indexOf(selectedBox) >= 0) {
+                for(var i = 0; i < ar2.length; i++){
+                    if ( ar2[i] === selectedBox) {
+                        ar2.splice(i, 1);
+                    }
+                }
+            }
+        } else {
+            for(var i = 0; i < ar1.length; i++){
+                if ( ar1[i] === selectedBox) {
+                    ar1.splice(i, 1);
+                }
+            }
+        }
+        let allTestTags = this.el.getElementsByClassName("tags")
+        for (let i = 0; i < allTestTags.length; i ++){
+            let tmTag = allTestTags[i].innerText.trim()
+            tmTag = tmTag.substring(1, tmTag.length-1)
+            let mthdTags = tmTag.split(',');
+            if (flag) {
+                let intersected = mthdTags.filter(value => ar2.includes(value));
+                if (mthdTags.indexOf(selectedBox) >=0 ) {
+                    if (chkStatus && intersected.length < 1) {
+
+                        allTestTags[i].parentElement.children[1].setAttribute("style", "color: #fff; background-color: #97cc64;")
+                        //allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
+                        totalSelectedCounts += 1;
+                    } else if (chkStatus === false && intersected.length < 1) {
+                        allTestTags[i].parentElement.children[1].setAttribute("style", "color: #000; background-color: none;")
+                        if (totalSelectedCounts <= 1){
+                            totalSelectedCounts = 0;
+                        } else {
+                            totalSelectedCounts += -1;
+                        }
+                    }
+                }
+
+            } else {
+                let intersectedIn = mthdTags.filter(value => ar2.includes(value));
+                let intersectedEx = mthdTags.filter(value => ar1.includes(value));
+                if (mthdTags.indexOf(selectedBox) >=0 ) {
+                    if (chkStatus) {
+                        allTestTags[i].parentElement.children[1].setAttribute("style", "color: #fff; background-color: red;")
+                        if (intersectedIn.length > 0 && intersectedEx.length > 0) {
+                            if (totalSelectedCounts <= 1){
+                                totalSelectedCounts = 0;
+                            } else {
+                                totalSelectedCounts += -1;
+                            }
+                        } else if (includeArr.length === 0 && excludeArr.length > 0) {
+                            totalSelectedCounts = 0;
+                        }
+                    } else if(chkStatus === false && intersectedIn.length > 0 ){
+                        //allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
+                        allTestTags[i].setAttribute("style", "color: #fff; background-color: #97cc64;")
+                        totalSelectedCounts += +1;
+                    } else {
+                        allTestTags[i].parentElement.children[1].setAttribute("style", "color: #000; background-color: none;")
+                        if (intersectedIn.length >= 0 && intersectedEx.length > 0) {
+                            if (totalSelectedCounts <= 1){
+                                totalSelectedCounts = 0;
+                            } else {
+                                totalSelectedCounts += -1;
+                            }
+                        }
+                    }
+                }
+
+            }
+            //let intersected = mthdTags.filter(value => ar2.includes(value));
+            //if (mthdTags.indexOf(selectedBox) >=0 ) {
+            //}
+        }
+        this.el.getElementsByClassName("selectedTestsCount")[0].innerText = totalSelectedCounts;
+    },
+
+  include: function(e) {
+      this.switchTagState(e.currentTarget.children[0],
+          e.currentTarget.parentElement.children[1].children[0]);
+      this.setTagState({tagName: e.currentTarget.parentElement.children[2].innerText.trim(), state: "include"});
+      this.highlightTest(e.currentTarget.children[0].checked,
+            e.currentTarget.parentElement.children[2].innerText.trim(),
+            includeArr, excludeArr, true);
+      //selectTag(e)
   },
 
   exclude: function(e) {
-      let include = e.currentTarget.parentElement.children[1].children[0].checked;
-      if (include) {
-          e.currentTarget.parentElement.children[0].children[0].checked = false;
-          e.currentTarget.children[0].checked = true;
-      };
+      this.switchTagState(e.currentTarget.children[0],
+          e.currentTarget.parentElement.children[0].children[0]);
       this.setTagState({tagName: e.currentTarget.parentElement.children[2].innerText.trim(), state: "exclude"})
+      this.highlightTest(e.currentTarget.children[0].checked,
+            e.currentTarget.parentElement.children[2].innerText.trim(),
+            excludeArr, includeArr, false);
   },
 
   runTests: function(e) {
@@ -252,8 +339,11 @@ var TestRunnerView = Backbone.Marionette.View.extend({
         .next("ul")
         .find("input:checkbox")
         .prop("checked", this.$(e.target).prop("checked"));
-    this.search(this.options.tests, e.target.nextSibling.data).state =
+    let selected = this.search(this.options.tests, e.target.nextSibling.data);
+    if (selected) {
+        selected.state =
         e.target.checked;
+    }
     for (
       var i =
         this.$(e.target)
@@ -274,7 +364,6 @@ var TestRunnerView = Backbone.Marionette.View.extend({
     // console.log(matchingTitle);
     //   console.log(element.displayName == matchingTitle);
     if (element.displayName == matchingTitle) {
-      console.log(element.displayName + "-" + matchingTitle);
       return element;
     } else if (element.children != null) {
       var i;
@@ -306,7 +395,7 @@ var TestExecutorView = Backbone.Marionette.View.extend({
     this.onceHostLabel = "OENC host";
     this.testCountLabel = "Total number of selected Tests cases";
     this.cleanLabel = "Clean existing reports before generating a new one";
-    this.testCount = 100;
+    this.testCount = totalSelectedCounts;
     this.runButtonCaption = "Run Tests";
     this.exec = new TestExecutor(exec);
     this.execTemplate =
@@ -316,7 +405,7 @@ var TestExecutorView = Backbone.Marionette.View.extend({
       "<input class='host-input' type='text' name='' id='host_text' value=''/></div>" +
       "<div class='panel'><label class='text-row text-label' for='id_clean'><%=cleanLabel%></label>" +
       "<input type='checkbox' name='clean' id='id_clean' class='clbox'></div>" +
-      "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label><%=testCount%></label></div>" +
+      "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label class='selectedTestsCount'><%=testCount%></label></div>" +
       "<div class='panel'><span class='text-row'><button class='execute-button' id='run'><%=runButtonCaption%></button></span></div>" +
       "</div></form>";
     this.render();
@@ -339,7 +428,8 @@ class TestNodeView extends Backbone.Marionette.View {
         "<ul class='tree_node'>" +
             "<li class='dir tree_leaf eachElem'>" +
                 "<input type='checkbox' class='cbox'>" +
-                    "<%=displayName%>" +
+                    "<span class='dispName'><%=displayName%></span>" +
+                    "<span class='tags label label-info'>[<%=tags%>]</span>" +
                 "<ul class='tree_node'>" +
                     "<%=node%>" +
                 "</ul>" +
@@ -376,7 +466,7 @@ class TestLeafView extends Backbone.Marionette.View {
     this.testsTemplate =
         "<li class='dir tree_leaf eachElem'>" + // tags=<%=alltags%>
             "<input type='checkbox' class='cbox'>" +
-                "<span><%=displayName%></span>" +
+                "<span class='dispName'><%=displayName%></span>" +
                 "<span class='tags label label-info'>[<%=tags%>]</span>" +
         "</li>";
     }
@@ -475,7 +565,9 @@ var TemplateParser = function(template, model) {
     m = template.indexOf("%>", n);
     //if (m < n) { console.error("invalid template at position " + n);}
     let key = template.substring(n, m);
-    response += model[key];
+    if (model[key]) {
+        response += model[key];
+    }
     n = m + 2;
   }
   if (n > 0 && n < template.length) {
