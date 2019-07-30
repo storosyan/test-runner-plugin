@@ -221,7 +221,6 @@ var TestRunnerView = Backbone.Marionette.View.extend({
                 let intersected = mthdTags.filter(value => ar2.includes(value));
                 if (mthdTags.indexOf(selectedBox) >=0 ) {
                     if (chkStatus && intersected.length < 1) {
-
                         allTestTags[i].parentElement.children[1].setAttribute("style", "color: #fff; background-color: #97cc64;")
                         //allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
                         totalSelectedCounts += 1;
@@ -251,8 +250,7 @@ var TestRunnerView = Backbone.Marionette.View.extend({
                             totalSelectedCounts = 0;
                         }
                     } else if(chkStatus === false && intersectedIn.length > 0 ){
-                        //allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
-                        allTestTags[i].setAttribute("style", "color: #fff; background-color: #97cc64;")
+                        allTestTags[i].parentElement.children[1].setAttribute("style", "color: #fff; background-color: #97cc64;")
                         totalSelectedCounts += +1;
                     } else {
                         allTestTags[i].parentElement.children[1].setAttribute("style", "color: #000; background-color: none;")
@@ -426,9 +424,9 @@ class TestNodeView extends Backbone.Marionette.View {
     this.leaf = new TestLeafView();
     this.testsTemplate =
         "<ul class='tree_node'>" +
-            "<li class='dir tree_leaf eachElem'>" +
+            "<li class='dir tree_leaf'>" +
                 "<input type='checkbox' class='cbox'>" +
-                    "<span class='dispName'><%=displayName%></span>" +
+                    "<span class='dispName  eachElem'><%=displayName%></span>" +
                     "<span class='tags label label-info'>[<%=tags%>]</span>" +
                 "<ul class='tree_node'>" +
                     "<%=node%>" +
@@ -464,9 +462,9 @@ class TestLeafView extends Backbone.Marionette.View {
     initialize() {
     //this.template = this._.template("<div class='abcd'></div>");
     this.testsTemplate =
-        "<li class='dir tree_leaf eachElem'>" + // tags=<%=alltags%>
+        "<li class='dir tree_leaf'>" + // tags=<%=alltags%>
             "<input type='checkbox' class='cbox'>" +
-                "<span class='dispName'><%=displayName%></span>" +
+                "<span class='dispName  eachElem'><%=displayName%></span>" +
                 "<span class='tags label label-info'>[<%=tags%>]</span>" +
         "</li>";
     }
