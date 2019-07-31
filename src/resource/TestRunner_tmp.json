@@ -1,0 +1,17 @@
+{
+    "exec":{"host":"http:","clean":true},
+    "tags":[
+        {"name":"negative","state":"exculde"},
+        {"name":"login","state":"exclude"},
+        {"name":"nodemoready","state":""},
+        {"name":"inactive","state":""},
+        {"name":"demoready","state":"include"},
+        {"name":"sanity","state":""},
+        {"name":"positive","state":""}
+    ],
+    "tests":{
+        "packages":["com.kgpco.vz.vertex.oenc.tests"],
+        "classes":[],
+        "methods":[]
+    }
+}
