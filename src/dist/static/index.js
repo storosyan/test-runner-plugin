@@ -34,24 +34,6 @@ var TestTagViewVar = Backbone.Marionette.View.extend({
       "<span class='exclude'><input type='checkbox' name='exclude' class='cbox'>" +
       "</span><span><%=name%></span></div>";
   },
-  /*
-  events: {
-    "click .btn": "displayOutput",
-    "change .tgBoxInclude": "includetagsToggle",
-    "change .tgBoxExclude": "excludetagsToggle"
-  },
-  includetagsToggle: function(e) {
-    alert("includetagsToggle");
-  },
-  excludetagsToggle: function(e) {
-    alert("excludetagsToggle");
-  },
-  displayOutput: function(e) {
-    alert("displayOutput");
-  },
-  checkbox: function(e) {
-    alert("checkbox");
-},*/
 
   render: function(tag) {
     //this.$el.html(this.template(this.tag.toJSON()));
@@ -92,7 +74,7 @@ class TestTagsView extends Backbone.Marionette.View {
 var excludeArr = [];
 var includeArr = [];
 var totalSelectedCounts = 0;
-var hostUrl = "";
+var hostUrl = "http://10.100.16.76";
 var cleanFlag = false;
 
 var TestRunnerView = Backbone.Marionette.View.extend({
@@ -246,9 +228,14 @@ var TestRunnerView = Backbone.Marionette.View.extend({
               tests: this.options.tests})], {
               type: "application/octet-stream"
           });
-
+/* suggested structure foe tests component of the resulting json
+{test: {packages: ["pckg1", "pckg2", ...]},
+       {classes: ["cls1", "cls2", ...]},
+       {methods: ["meth1", "meth2", ...]}
+   }
+*/
           var url = URL.createObjectURL(blob);
-          alert(url)
+          //alert(url)
           var link = document.createElement("a");
           link.setAttribute("href", url);
           link.setAttribute("download", "TestRunner.json");
