@@ -287,7 +287,7 @@ var TestRunnerView = Backbone.Marionette.View.extend({
           JSON.stringify({
             exec: { host: url, clean: cleanFlag },
             tags: this.options.tags,
-            tests: output
+            tests: output.tests
           })
         ],
         {
