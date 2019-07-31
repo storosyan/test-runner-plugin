@@ -218,10 +218,18 @@ var TestRunnerView = Backbone.Marionette.View.extend({
       e.currentTarget.children[0],
       e.currentTarget.parentElement.children[1].children[0]
     );
-    this.setTagState({
-      tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-      state: "include"
-    });
+    if (e.target.checked) {
+      this.setTagState({
+        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+        state: "include"
+      });
+    } else {
+      this.setTagState({
+        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+        state: false
+      });
+    }
+
     this.highlightTest(
       e.currentTarget.children[0].checked,
       e.currentTarget.parentElement.children[2].innerText.trim(),
@@ -229,7 +237,6 @@ var TestRunnerView = Backbone.Marionette.View.extend({
       excludeArr,
       true
     );
-    //selectTag(e)
   },
 
   exclude: function(e) {
@@ -237,10 +244,17 @@ var TestRunnerView = Backbone.Marionette.View.extend({
       e.currentTarget.children[0],
       e.currentTarget.parentElement.children[0].children[0]
     );
-    this.setTagState({
-      tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-      state: "exclude"
-    });
+    if (e.target.checked) {
+      this.setTagState({
+        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+        state: "exclude"
+      });
+    } else {
+      this.setTagState({
+        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+        state: false
+      });
+    }
     this.highlightTest(
       e.currentTarget.children[0].checked,
       e.currentTarget.parentElement.children[2].innerText.trim(),
