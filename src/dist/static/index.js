@@ -616,7 +616,7 @@ allure.api.addTab("tests", {
   route: "tests",
   onEnter: function() {
     return new TestRunnerLayout({
-      url: "data/testDiscoverynew.json"
+      url: "data/testDiscovery.json"
     });
   }
 });
