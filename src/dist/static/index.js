@@ -76,6 +76,12 @@ var includeArr = [];
 var totalSelectedCounts = 0;
 var hostUrl = "http://10.100.16.76";
 var cleanFlag = false;
+var includeTestBgColor = "#97cc64";
+var excludeTestBgColor = "red";
+var noHighlightTestBgColor = "none";
+var includeTestTxColor = "#fff";
+var excludeTestTxColor = "#fff";
+var noHighlightTestTxColor = "#000";
 
 var TestRunnerView = Backbone.Marionette.View.extend({
   className: "grid",
@@ -124,234 +130,178 @@ var TestRunnerView = Backbone.Marionette.View.extend({
     }
   },
 
-  highlightTest: function(chkStatus, selectedBox, ar1, ar2, flag) {
-    if (chkStatus) {
-      ar1.push(selectedBox);
-      if (ar2.indexOf(selectedBox) >= 0) {
-        for (var i = 0; i < ar2.length; i++) {
-          if (ar2[i] === selectedBox) {
-            ar2.splice(i, 1);
-          }
-        }
-      }
-    } else {
-      for (var i = 0; i < ar1.length; i++) {
-        if (ar1[i] === selectedBox) {
-          ar1.splice(i, 1);
-        }
-      }
-    }
-    let allTestTags = this.el.getElementsByClassName("tags");
-    for (let i = 0; i < allTestTags.length; i++) {
-      let tmTag = allTestTags[i].innerText.trim();
-      tmTag = tmTag.substring(1, tmTag.length - 1);
-      let mthdTags = tmTag.split(",");
-      if (flag) {
-        let intersected = mthdTags.filter(value => ar2.includes(value));
-        if (mthdTags.indexOf(selectedBox) >= 0) {
-          if (chkStatus && intersected.length < 1) {
-            allTestTags[i].parentElement.children[1].setAttribute(
-              "style",
-              "color: #fff; background-color: #97cc64;"
-            );
-            //allTestTags[i].parentElement.setAttribute("style", "background-color: green;")
-            totalSelectedCounts += 1;
-          } else if (chkStatus === false && intersected.length < 1) {
-            allTestTags[i].parentElement.children[1].setAttribute(
-              "style",
-              "color: #000; background-color: none;"
-            );
-            if (totalSelectedCounts <= 1) {
-              totalSelectedCounts = 0;
-            } else {
-              totalSelectedCounts += -1;
-            }
-          }
-        }
-      } else {
-        let intersectedIn = mthdTags.filter(value => ar2.includes(value));
-        let intersectedEx = mthdTags.filter(value => ar1.includes(value));
-        if (mthdTags.indexOf(selectedBox) >= 0) {
-          if (chkStatus) {
-            allTestTags[i].parentElement.children[1].setAttribute(
-              "style",
-              "color: #fff; background-color: red;"
-            );
-            if (intersectedIn.length > 0 && intersectedEx.length > 0) {
-              if (totalSelectedCounts <= 1) {
-                totalSelectedCounts = 0;
-              } else {
-                totalSelectedCounts += -1;
+  selectByTag: function(map, tag) {
+      let ret = "none";
+      let tagList = tag.innerText;
+      tagList = tagList.substring(1, tagList.length - 1);
+      if (tagList.length > 0) {
+          let list = tagList.split(',');
+          for (var i in list) {
+              let state = map[list[i]];
+              if (state === 'exclude') {
+                  return state;
+              } else if (state === 'include') {
+                  ret = state;
               }
-            } else if (includeArr.length === 0 && excludeArr.length > 0) {
-              totalSelectedCounts = 0;
-            }
-          } else if (chkStatus === false && intersectedIn.length > 0) {
-            allTestTags[i].parentElement.children[1].setAttribute(
-              "style",
-              "color: #fff; background-color: #97cc64;"
-            );
-            totalSelectedCounts += +1;
-          } else {
-            allTestTags[i].parentElement.children[1].setAttribute(
-              "style",
-              "color: #000; background-color: none;"
-            );
-            if (intersectedIn.length >= 0 && intersectedEx.length > 0) {
-              if (totalSelectedCounts <= 1) {
-                totalSelectedCounts = 0;
-              } else {
-                totalSelectedCounts += -1;
-              }
-            }
           }
-        }
       }
-    }
-    this.el.getElementsByClassName(
-      "selectedTestsCount"
-    )[0].innerText = totalSelectedCounts;
+      return ret;
   },
 
-  include: function(e) {
-    this.switchTagState(
-      e.currentTarget.children[0],
-      e.currentTarget.parentElement.children[1].children[0]
-    );
-    if (e.target.checked) {
-      this.setTagState({
-        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-        state: "include"
-      });
-    } else {
-      this.setTagState({
-        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-        state: false
-      });
-    }
+  highlight: function(span, txColor, bgColor) {
+      span.setAttribute("style",
+        "color: " + txColor + "; background-color: " + bgColor + ";"
+      );
+  },
 
-    this.highlightTest(
-      e.currentTarget.children[0].checked,
-      e.currentTarget.parentElement.children[2].innerText.trim(),
-      includeArr,
-      excludeArr,
-      true
-    );
+  highliteAndCount: function() {
+      var totalCount = 0;
+      var tagMap = {};
+      this.model.tags.each(function(item) {
+          tagMap[item.get("name")] = item.get('state');
+      });
+      let tags = this.el.getElementsByClassName("dispName");
+      for (var i in tags) {
+          if (tags[i].parentElement == null ||
+              tags[i].parentElement.getElementsByTagName('ul').length > 0) {
+              continue;
+          }
+          let testColor = noHighlightTestBgColor;
+          let textColor = noHighlightTestTxColor;
+          let status = this.selectByTag(tagMap,
+              tags[i].parentElement.getElementsByClassName("tags")[0]);
+          if (status === "include") {
+              totalCount++;
+              testColor = includeTestBgColor;
+              textColor = includeTestTxColor;
+          } else if (status === "exclude") {
+              testColor = excludeTestBgColor;
+              textColor = excludeTestTxColor;
+          }
+          this.highlight(tags[i], textColor, testColor);
+      }
+      this.el.getElementsByClassName("selectedTestsCount")[0].innerText = totalCount;
+  },
+
+   include: function(e) {
+       this.switchTagState(
+           e.currentTarget.children[0],
+           e.currentTarget.parentElement.children[1].children[0]
+       );
+       if (e.target.checked) {
+           this.setTagState({
+               tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+               state: "include"
+           });
+       } else {
+           this.setTagState({
+               tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+               state: false
+           });
+       };
+       this.highliteAndCount();
   },
 
   exclude: function(e) {
-    this.switchTagState(
-      e.currentTarget.children[0],
-      e.currentTarget.parentElement.children[0].children[0]
-    );
-    if (e.target.checked) {
-      this.setTagState({
-        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-        state: "exclude"
-      });
-    } else {
-      this.setTagState({
-        tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
-        state: false
-      });
-    }
-    this.highlightTest(
-      e.currentTarget.children[0].checked,
-      e.currentTarget.parentElement.children[2].innerText.trim(),
-      excludeArr,
-      includeArr,
-      false
-    );
+      this.switchTagState(
+          e.currentTarget.children[0],
+          e.currentTarget.parentElement.children[0].children[0]
+      );
+      if (e.target.checked) {
+          this.setTagState({
+              tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+              state: "exclude"
+          });
+      } else {
+          this.setTagState({
+              tagName: e.currentTarget.parentElement.children[2].innerText.trim(),
+              state: false
+          });
+      }
+      this.highliteAndCount();
   },
 
   runTests: function(e) {
-    var output = JSON.parse(
-      JSON.stringify({
-        tests: { packages: [], classes: [], methods: [] }
-      })
-    );
-    if (
-      typeof this.options.tests.state != "undefined" &&
-      this.options.tests.state === true
-    ) {
-      output.tests.packages.push(this.options.tests.displayName);
-    } else {
-      this.buildJson(this.options.tests, output.tests);
-    }
-    var url = hostUrl.trim() || "";
-    if (!url.startsWith("http")) {
-      alert("Invalid OENC host. Must start with http(s).");
-    } else {
-      var blob = new Blob(
-        [
+      var output = JSON.parse(
           JSON.stringify({
-            exec: { host: url, clean: cleanFlag },
-            tags: this.options.tags,
-            tests: output.tests
+              tests: { packages: [], classes: [], methods: [] }
           })
-        ],
-        {
-          type: "application/octet-stream"
-        }
       );
-      /* suggested structure foe tests component of the resulting json
-    {test: {packages: ["pckg1", "pckg2", ...]},
-           {classes: ["cls1", "cls2", ...]},
-           {methods: ["meth1", "meth2", ...]}
-       }
-    */
-      var url = URL.createObjectURL(blob);
-      //alert(url)
-      var link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", "TestRunner.json");
-      var event = document.createEvent("MouseEvents");
-      event.initMouseEvent(
-        "click",
-        true,
-        true,
-        window,
-        1,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        false,
-        false,
-        0,
-        null
-      );
-      link.dispatchEvent(event);
-    }
+      if (
+          typeof this.options.tests.state != "undefined" &&
+          this.options.tests.state === true
+      ) {
+          output.tests.packages.push(this.options.tests.displayName);
+      } else {
+          this.buildJson(this.options.tests, output.tests);
+      }
+      var url = hostUrl.trim() || "";
+      if (!url.startsWith("http")) {
+          alert("Invalid OENC host. Must start with http(s).");
+      } else {
+          var blob = new Blob(
+              [
+                  JSON.stringify({
+                      exec: { host: url, clean: cleanFlag },
+                      tags: this.options.tags,
+                      tests: output.tests
+                  })
+              ],
+              {
+                  type: "application/octet-stream"
+              }
+          );
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute("download", "TestRunner.json");
+          var event = document.createEvent("MouseEvents");
+          event.initMouseEvent(
+              "click",
+              true,
+              true,
+              window,
+              1,
+              0,
+              0,
+              0,
+              0,
+              false,
+              false,
+              false,
+              false,
+              0,
+              null
+          );
+          link.dispatchEvent(event);
+      }
   },
 
   buildJson: function(modelobj, jsonobj) {
-    for (var j in modelobj.children) {
-      if (
-        typeof modelobj.children[j].state != "undefined" &&
-        modelobj.children[j].state === true
-      ) {
-        if (modelobj.children[j].type == "package") {
-          jsonobj.packages.push(modelobj.children[j].displayName);
-        } else if (modelobj.children[j].type == "class") {
-          jsonobj.classes.push(modelobj.children[j].displayName);
-        } else {
-          jsonobj.methods.push(modelobj.children[j].displayName);
-        }
-      } else {
-        this.buildJson(modelobj.children[j], jsonobj);
+      for (var j in modelobj.children) {
+          if (
+              typeof modelobj.children[j].state != "undefined" &&
+              modelobj.children[j].state === true
+          ) {
+              if (modelobj.children[j].type == "package") {
+                  jsonobj.packages.push(modelobj.children[j].displayName);
+              } else if (modelobj.children[j].type == "class") {
+                  jsonobj.classes.push(modelobj.children[j].displayName);
+              } else {
+                  jsonobj.methods.push(modelobj.children[j].displayName);
+              }
+          } else {
+              this.buildJson(modelobj.children[j], jsonobj);
+          }
       }
-    }
-    return jsonobj;
+      return jsonobj;
   },
 
   treeClicked: function(e) {
-    e.stopPropagation();
-    this.$(e.target.parentElement)
-      .children("ul")
-      .slideToggle();
+      e.stopPropagation();
+      this.$(e.target.parentElement)
+        .children("ul")
+        .slideToggle();
   },
 
   checked: function(e) {
@@ -434,7 +384,7 @@ var TestExecutorView = Backbone.Marionette.View.extend({
       "<div class='row test-executor'>" +
       "<div class='title'><h2><%=title%></h2></div>" +
       "<div class='panel'><label class='text-row host' for='host_text'><%=onceHostLabel%></label>" +
-      "<input class='host-input' type='text' name='' id='host_text' value=''/></div>" +
+      "<input class='host-input' type='text' name='' id='host_text' value='<%=oencUrl%>'/></div>" +
       "<div class='panel'><label class='text-row text-label' for='id_clean'><%=cleanLabel%></label>" +
       "<input type='checkbox' name='clean' id='id_clean' class='clbox'></div>" +
       "<div class='panel'><label class='text-row text-label'><%=testCountLabel%></label><label class='selectedTestsCount'><%=testCount%></label></div>" +
@@ -445,6 +395,7 @@ var TestExecutorView = Backbone.Marionette.View.extend({
   },
 
   render: function() {
+    this.oencUrl = hostUrl;
     let execContent = TemplateParser(this.execTemplate, this);
     this.$el.html(execContent);
     return this;
