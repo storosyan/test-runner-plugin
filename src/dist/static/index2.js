@@ -627,5 +627,5 @@ allure.api.addTab("tests", {
     return new TestRunnerLayout({
       url: "data/plugindata.json"
     });
-  }
+  } 
 });
