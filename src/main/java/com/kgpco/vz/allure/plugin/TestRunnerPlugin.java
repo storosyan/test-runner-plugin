@@ -10,7 +10,6 @@ import java.util.List;
 import io.qameta.allure.Aggregator;
 import io.qameta.allure.core.Configuration;
 import io.qameta.allure.core.LaunchResults;
-
 public class TestRunnerPlugin implements Aggregator {
 
 	@Override
