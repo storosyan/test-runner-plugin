@@ -5,4 +5,6 @@
 **/*.log
 .settings/
 **/.DS_Store
+/src/main/resource/
+/src/resource/new/
 .class
